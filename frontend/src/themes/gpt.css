@@ -1,0 +1,67 @@
+/* ── Theme: GPT ──────────────────────────────────────────────────────────── */
+
+[data-theme="gpt"] {
+  --bg:        #212121;
+  --s1:        #171717;
+  --s2:        #2f2f2f;
+  --s3:        #383838;
+  --s4:        #424242;
+  --border:    #4a4a4a;
+  --border-hi: rgba(255, 255, 255, 0.14);
+
+  --accent:    #acacac;
+  --accent-l:  #d0d0d0;
+  --accent-bg: rgba(255, 255, 255, 0.06);
+  --accent-bd: rgba(255, 255, 255, 0.12);
+
+  --text:      #ececec;
+  --text-2:    #8e8e8e;
+  --text-3:    #505050;
+
+  --danger:    #ef4444;
+  --danger-bg: rgba(239, 68, 68, 0.10);
+
+  --user-bg:   rgba(255, 255, 255, 0.04);
+  --user-bd:   rgba(255, 255, 255, 0.09);
+  --asst-bg:   #212121;
+  --asst-bd:   #4a4a4a;
+
+  --font-brand: 'Inter', system-ui, sans-serif;
+  --font-ui:    'Inter', system-ui, sans-serif;
+  --font-body:  'Inter', system-ui, sans-serif;
+  --font-mono:  'Geist Mono', 'JetBrains Mono', monospace;
+
+  --r:    12px;
+  --r-lg: 16px;
+  --r-xl: 20px;
+
+  --shadow:    0 4px 20px rgba(0, 0, 0, 0.4);
+  --shadow-lg: 0 16px 48px rgba(0, 0, 0, 0.6);
+}
+
+/* Prose */
+[data-theme="gpt"] .prose-chat {
+  font-size: 15px;
+  line-height: 1.7;
+  letter-spacing: -0.005em;
+}
+
+[data-theme="gpt"] .prose-chat h1 { font-weight: 600; letter-spacing: -0.02em; }
+[data-theme="gpt"] .prose-chat h2 { font-weight: 600; letter-spacing: -0.015em; }
+[data-theme="gpt"] .prose-chat h3 { font-weight: 500; }
+
+[data-theme="gpt"] .prose-chat pre {
+  border-top: 1px solid var(--border);
+  border-radius: var(--r);
+}
+
+[data-theme="gpt"] .prose-chat pre code { font-size: 13px; }
+
+/* Forms */
+[data-theme="gpt"] .asm-input {
+  font-size: 14px;
+}
+
+[data-theme="gpt"] .asm-input:focus {
+  box-shadow: 0 0 0 3px var(--accent-bg);
+}

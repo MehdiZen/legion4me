@@ -1,0 +1,90 @@
+/* ── Theme: SIGNAL ───────────────────────────────────────────────────────── */
+
+[data-theme="signal"] {
+  --bg:        #050908;
+  --s1:        #090e0c;
+  --s2:        #0d1410;
+  --s3:        #121b16;
+  --s4:        #17221c;
+  --border:    #1d2c24;
+  --border-hi: rgba(0, 229, 176, 0.25);
+
+  --accent:    #00e5b0;
+  --accent-l:  #33ffcc;
+  --accent-bg: rgba(0, 229, 176, 0.07);
+  --accent-bd: rgba(0, 229, 176, 0.20);
+
+  --text:      #c5d8cf;
+  --text-2:    #4e7060;
+  --text-3:    #2a3d32;
+
+  --danger:    #cc4444;
+  --danger-bg: rgba(204, 68, 68, 0.10);
+
+  --user-bg:   rgba(0, 229, 176, 0.06);
+  --user-bd:   rgba(0, 229, 176, 0.18);
+  --asst-bg:   #090e0c;
+  --asst-bd:   #1d2c24;
+
+  --font-brand: 'Syne', sans-serif;
+  --font-ui:    'Syne', sans-serif;
+  --font-body:  'JetBrains Mono', monospace;
+  --font-mono:  'JetBrains Mono', monospace;
+
+  --r:    2px;
+  --r-lg: 4px;
+  --r-xl: 6px;
+
+  --shadow:    0 4px 20px rgba(0, 0, 0, 0.6);
+  --shadow-lg: 0 12px 48px rgba(0, 0, 0, 0.8);
+}
+
+/* Scanlines */
+[data-theme="signal"] #app::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background: repeating-linear-gradient(
+    180deg,
+    transparent 0px,
+    transparent 3px,
+    rgba(0, 229, 176, 0.010) 3px,
+    rgba(0, 229, 176, 0.010) 4px
+  );
+  pointer-events: none;
+  z-index: 9998;
+}
+
+/* Prose */
+[data-theme="signal"] .prose-chat {
+  font-size: 15px;
+  line-height: 1.50;
+}
+
+[data-theme="signal"] .prose-chat h1,
+[data-theme="signal"] .prose-chat h2,
+[data-theme="signal"] .prose-chat h3 {
+  font-family: var(--font-brand);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+[data-theme="signal"] .prose-chat ul li::before { content: '>'; }
+
+[data-theme="signal"] .prose-chat pre {
+  border-top: none;
+  border-left: 2px solid var(--accent);
+}
+
+/* Forms */
+[data-theme="signal"] .asm-input {
+  font-family: var(--font-mono);
+  font-size: 13px;
+}
+
+[data-theme="signal"] .asm-input:focus {
+  box-shadow: none;
+  outline: 1px solid var(--accent);
+  outline-offset: 1px;
+}

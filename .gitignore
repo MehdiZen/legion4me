@@ -1,0 +1,16 @@
+# Dependencies
+node_modules/
+
+# Build outputs
+dist/
+frontend/dist/
+backend/dist/
+
+# Database
+*.db
+*.db-shm
+*.db-wal
+
+# Environment
+.env
+

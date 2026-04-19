@@ -1,0 +1,67 @@
+/* ── Theme: GRIMOIRE ─────────────────────────────────────────────────────── */
+
+:root,
+[data-theme="grimoire"] {
+  --bg:        #080810;
+  --s1:        #0c0c18;
+  --s2:        #10101e;
+  --s3:        #161628;
+  --s4:        #1d1d32;
+  --border:    #26263d;
+  --border-hi: rgba(200, 164, 90, 0.28);
+
+  --accent:    #c8a45a;
+  --accent-l:  #e8c978;
+  --accent-bg: rgba(200, 164, 90, 0.09);
+  --accent-bd: rgba(200, 164, 90, 0.24);
+
+  --text:      #e4dfd5;
+  --text-2:    #8c8a97;
+  --text-3:    #4a4860;
+
+  --danger:    #a03636;
+  --danger-bg: rgba(160, 54, 54, 0.12);
+
+  --user-bg:   rgba(200, 164, 90, 0.08);
+  --user-bd:   rgba(200, 164, 90, 0.22);
+  --asst-bg:   #0c0c18;
+  --asst-bd:   #26263d;
+
+  --font-brand: 'Cinzel', 'Palatino Linotype', serif;
+  --font-ui:    'Cormorant Garamond', 'Georgia', serif;
+  --font-body:  'Crimson Pro', 'Georgia', serif;
+  --font-mono:  'IBM Plex Mono', 'Courier New', monospace;
+  --font-scale: 1.5;
+
+  --r:    10px;
+  --r-lg: 16px;
+  --r-xl: 22px;
+
+  --shadow:    0 8px 32px rgba(0, 0, 0, 0.5);
+  --shadow-lg: 0 20px 60px rgba(0, 0, 0, 0.7);
+}
+
+/* Grain overlay */
+[data-theme="grimoire"] #app::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/><feColorMatrix type='saturate' values='0'/></filter><rect width='200' height='200' filter='url(%23n)'/></svg>");
+  opacity: 0.038;
+  pointer-events: none;
+  z-index: 9998;
+  mix-blend-mode: overlay;
+}
+
+/* Prose */
+[data-theme="grimoire"] .prose-chat { font-size: 19px; }
+
+/* Forms */
+[data-theme="grimoire"] .asm-input:focus {
+  box-shadow: 0 0 0 3px var(--accent-bg);
+}
+
+/* Divider */
+[data-theme="grimoire"] .divider {
+  background: linear-gradient(90deg, transparent, var(--border) 20%, var(--border) 80%, transparent);
+}

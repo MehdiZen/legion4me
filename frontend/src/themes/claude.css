@@ -1,0 +1,87 @@
+/* ── Theme: CLAUDE ───────────────────────────────────────────────────────── */
+
+[data-theme="claude"] {
+  --bg:        #e8ddd0;
+  --s1:        #ddd0c0;
+  --s2:        #e8ddd0;
+  --s3:        #d4c6b4;
+  --s4:        #c8b8a4;
+  --border:    #bfae98;
+  --border-hi: rgba(180, 85, 50, 0.40);
+
+  --accent:    #b84a28;
+  --accent-l:  #d06040;
+  --accent-bg: rgba(184, 74, 40, 0.09);
+  --accent-bd: rgba(184, 74, 40, 0.26);
+
+  --text:      #1c1510;
+  --text-2:    #6a5c4e;
+  --text-3:    #a0906e;
+
+  --danger:    #b83030;
+  --danger-bg: rgba(184, 48, 48, 0.08);
+
+  --user-bg:   rgba(184, 74, 40, 0.08);
+  --user-bd:   rgba(184, 74, 40, 0.22);
+  --asst-bg:   #ddd0c0;
+  --asst-bd:   #bfae98;
+
+  --font-brand: 'Crimson Pro', 'Georgia', serif;
+  --font-ui:    'Inter', system-ui, sans-serif;
+  --font-body:  'Crimson Pro', 'Georgia', serif;
+  --font-mono:  'IBM Plex Mono', 'Courier New', monospace;
+
+  --r:    10px;
+  --r-lg: 16px;
+  --r-xl: 22px;
+
+  --shadow:    0 2px 14px rgba(60, 40, 20, 0.14);
+  --shadow-lg: 0 14px 44px rgba(60, 40, 20, 0.22);
+}
+
+/* Prose */
+[data-theme="claude"] .prose-chat {
+  font-size: 18px;
+  line-height: 1.65;
+}
+
+[data-theme="claude"] .prose-chat h1 { font-weight: 600; }
+[data-theme="claude"] .prose-chat h2 { font-weight: 600; }
+[data-theme="claude"] .prose-chat h3 { font-weight: 500; font-style: italic; }
+
+[data-theme="claude"] .prose-chat pre {
+  border-top: 2px solid var(--accent);
+  border-radius: 0 0 var(--r) var(--r);
+  background: #d4c6b4;
+}
+
+[data-theme="claude"] .prose-chat pre code {
+  font-size: 12.5px;
+  color: #2a1a0e;
+}
+
+[data-theme="claude"] .prose-chat code {
+  background: #d4c6b4;
+  color: #8b3a18;
+  border-color: #bfae98;
+}
+
+/* Divider */
+[data-theme="claude"] .divider {
+  background: linear-gradient(90deg, transparent, var(--border) 20%, var(--border) 80%, transparent);
+}
+
+/* Forms */
+[data-theme="claude"] .asm-input {
+  font-family: var(--font-ui);
+  font-size: 14px;
+  background: var(--s1);
+}
+
+[data-theme="claude"] .asm-input:focus {
+  box-shadow: 0 0 0 3px var(--accent-bg);
+}
+
+/* Scrollbar */
+[data-theme="claude"] ::-webkit-scrollbar-thumb { background: #bfae98; }
+[data-theme="claude"] ::-webkit-scrollbar-thumb:hover { background: var(--accent); }

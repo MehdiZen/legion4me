@@ -1,0 +1,81 @@
+/* ── Theme: GEMINI ───────────────────────────────────────────────────────── */
+
+[data-theme="gemini"] {
+  --bg:        #0f0f14;
+  --s1:        #14141c;
+  --s2:        #1b1b26;
+  --s3:        #232330;
+  --s4:        #2c2c3c;
+  --border:    #38384e;
+  --border-hi: rgba(79, 142, 245, 0.30);
+
+  --accent:    #4f8ef5;
+  --accent-l:  #82acf8;
+  --accent-bg: rgba(79, 142, 245, 0.08);
+  --accent-bd: rgba(79, 142, 245, 0.22);
+
+  --text:      #e8e8f2;
+  --text-2:    #7878a0;
+  --text-3:    #404060;
+
+  --danger:    #f87171;
+  --danger-bg: rgba(248, 113, 113, 0.10);
+
+  --user-bg:   rgba(79, 142, 245, 0.06);
+  --user-bd:   rgba(79, 142, 245, 0.18);
+  --asst-bg:   #14141c;
+  --asst-bd:   #38384e;
+
+  --font-brand: 'Inter', system-ui, sans-serif;
+  --font-ui:    'Inter', system-ui, sans-serif;
+  --font-body:  'Inter', system-ui, sans-serif;
+  --font-mono:  'Geist Mono', 'JetBrains Mono', monospace;
+
+  --r:    16px;
+  --r-lg: 20px;
+  --r-xl: 28px;
+
+  --shadow:    0 4px 24px rgba(0, 0, 0, 0.5);
+  --shadow-lg: 0 20px 56px rgba(0, 0, 0, 0.7);
+}
+
+/* Subtle shimmer overlay — évoque le gradient Gemini */
+[data-theme="gemini"] #app::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background: radial-gradient(ellipse 60% 40% at 70% 0%, rgba(79, 142, 245, 0.04) 0%, transparent 70%),
+              radial-gradient(ellipse 50% 30% at 20% 100%, rgba(138, 92, 246, 0.03) 0%, transparent 60%);
+  pointer-events: none;
+  z-index: 9998;
+}
+
+/* Prose */
+[data-theme="gemini"] .prose-chat {
+  font-size: 15px;
+  line-height: 1.7;
+  letter-spacing: -0.005em;
+}
+
+[data-theme="gemini"] .prose-chat h1 { font-weight: 600; letter-spacing: -0.02em; }
+[data-theme="gemini"] .prose-chat h2 { font-weight: 600; }
+[data-theme="gemini"] .prose-chat h3 { font-weight: 500; }
+
+[data-theme="gemini"] .prose-chat ul li::before { content: '·'; font-size: 1.3em; line-height: 1; top: -1px; }
+
+[data-theme="gemini"] .prose-chat pre {
+  border-top: 1px solid var(--border);
+  border-radius: var(--r);
+}
+
+[data-theme="gemini"] .prose-chat pre code { font-size: 13px; }
+
+/* Forms */
+[data-theme="gemini"] .asm-input {
+  font-size: 14px;
+  border-radius: var(--r);
+}
+
+[data-theme="gemini"] .asm-input:focus {
+  box-shadow: 0 0 0 3px var(--accent-bg);
+}

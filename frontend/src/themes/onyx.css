@@ -1,0 +1,79 @@
+/* ── Theme: ONYX ─────────────────────────────────────────────────────────── */
+
+[data-theme="onyx"] {
+  --bg:        #0c0c0c;
+  --s1:        #111111;
+  --s2:        #191919;
+  --s3:        #222222;
+  --s4:        #2c2c2c;
+  --border:    #333333;
+  --border-hi: rgba(167, 139, 250, 0.30);
+
+  --accent:    #a78bfa;
+  --accent-l:  #c4b5fd;
+  --accent-bg: rgba(167, 139, 250, 0.08);
+  --accent-bd: rgba(167, 139, 250, 0.20);
+
+  --text:      #f2f2f2;
+  --text-2:    #737373;
+  --text-3:    #3d3d3d;
+
+  --danger:    #f87171;
+  --danger-bg: rgba(248, 113, 113, 0.10);
+
+  --user-bg:   rgba(167, 139, 250, 0.05);
+  --user-bd:   rgba(167, 139, 250, 0.14);
+  --asst-bg:   #111111;
+  --asst-bd:   #262626;
+
+  --font-brand: 'Inter', system-ui, sans-serif;
+  --font-ui:    'Inter', system-ui, sans-serif;
+  --font-body:  'Inter', system-ui, sans-serif;
+  --font-mono:  'Geist Mono', 'JetBrains Mono', monospace;
+
+  --r:    8px;
+  --r-lg: 12px;
+  --r-xl: 18px;
+
+  --shadow:    0 4px 20px rgba(0, 0, 0, 0.5);
+  --shadow-lg: 0 16px 48px rgba(0, 0, 0, 0.7);
+}
+
+/* Prose */
+[data-theme="onyx"] .prose-chat {
+  font-size: 15px;
+  line-height: 1.65;
+  font-weight: 400;
+  letter-spacing: -0.01em;
+}
+
+[data-theme="onyx"] .prose-chat h1 { font-size: 1.2em;  font-weight: 600; letter-spacing: -0.02em; }
+[data-theme="onyx"] .prose-chat h2 { font-size: 1.05em; font-weight: 600; letter-spacing: -0.015em; }
+[data-theme="onyx"] .prose-chat h3 { font-size: 1em;    font-weight: 500; }
+
+[data-theme="onyx"] .prose-chat ul li::before {
+  content: '·';
+  font-size: 1.3em;
+  line-height: 1;
+  top: -1px;
+}
+
+[data-theme="onyx"] .prose-chat pre {
+  border-top: 1px solid var(--border);
+  border-radius: var(--r);
+}
+
+[data-theme="onyx"] .prose-chat pre code { font-size: 13px; }
+
+/* Forms */
+[data-theme="onyx"] .asm-input {
+  font-size: 14px;
+  letter-spacing: -0.01em;
+}
+
+/* Labels */
+[data-theme="onyx"] .section-label {
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  font-size: 11px;
+}
