@@ -3,8 +3,8 @@ import { conversationSummaries } from '../db/schema'
 import { eq } from 'drizzle-orm'
 import { chatOnce } from './ollama'
 
-const THRESHOLD = 20 // compact when raw messages after checkpoint exceed this
-const STEP = 10      // number of messages to absorb per compaction
+const THRESHOLD = 10 // compact when raw messages after checkpoint exceed this
+const STEP = 6       // number of messages to absorb per compaction
 
 interface MsgRow {
   id: string

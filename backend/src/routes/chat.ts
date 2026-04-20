@@ -150,7 +150,10 @@ Règles impératives :
 - N'annonce jamais "je vais faire une recherche" ou "je vais consulter". Fais-le, c'est tout.
 - **TOUJOURS appeler \`web_search\` en premier** pour : prix (carburant, immobilier, bourse, crypto…), actualités, météo, résultats sportifs, classements, taux de change, événements récents, sorties (films, jeux, albums…), ou toute donnée susceptible d'avoir changé depuis 2024.
 - Ne jamais répondre d'après ta mémoire d'entraînement pour ces sujets, même si tu "crois" connaître la réponse.
-- Pour \`save_memory\` : appelle-le en plus de ta réponse, pas à la place. Sauvegarde en silence, continue de répondre normalement.`
+- Pour \`save_memory\` : appelle-le en plus de ta réponse, pas à la place. Sauvegarde en silence, continue de répondre normalement.
+
+---
+Instruction de focus : **le dernier message de l'utilisateur est ta tâche principale**. L'historique ci-dessus est du contexte secondaire — consulte-le uniquement si le dernier message y fait implicitement référence (anaphore, ellipse, "comme on disait", etc.). Ne reformule pas ce qui a déjà été dit et ne répète pas les conclusions passées sauf si explicitement demandé.`
 }
 
 async function webSearch(query: string): Promise<string> {
@@ -618,11 +621,15 @@ chatRouter.post('/stream', async (req, res) => {
   // Check / update rolling summary
   const { summaryContent, coversUpToMsgId } = await getOrUpdateSummary(persona.model, conversationId, history)
 
-  // Keep only messages after the summary checkpoint
+  // Keep only messages after the summary checkpoint, capped to last N turns
+  const MAX_RECENT_MESSAGES = 8
   let contextHistory = history
   if (coversUpToMsgId) {
     const cutoff = history.findIndex(m => m.id === coversUpToMsgId)
     if (cutoff >= 0) contextHistory = history.slice(cutoff + 1)
+  }
+  if (contextHistory.length > MAX_RECENT_MESSAGES) {
+    contextHistory = contextHistory.slice(-MAX_RECENT_MESSAGES)
   }
 
   const summaryBlock = summaryContent
