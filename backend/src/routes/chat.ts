@@ -410,6 +410,10 @@ async function searchWikipedia(query: string): Promise<string> {
   return result.slice(0, WEB_CONTENT_CHARS)
 }
 
+// ── Format global ─────────────────────────────────────────────────────────────
+
+const FORMAT_ADDENDUM = `\n\nFormat : Réponds en prose, sans listes à puces ni titres sauf si l'utilisateur en fait explicitement la demande. Sois concis et direct.`
+
 // ── Persona generator ─────────────────────────────────────────────────────────
 
 const PERSONA_GEN_SYSTEM = `Tu es un générateur de personas pour une interface LLM personnelle.
@@ -422,12 +426,14 @@ Format attendu :
   "description": "Une phrase décrivant le rôle du persona",
   "systemPrompt": "Prompt système complet et détaillé, en français sauf si le contexte impose une autre langue",
   "temperature": 0.7,
-  "color": "#hexcolor"
+  "color": "#hexcolor",
+  "emoji": "🤖"
 }
 
 Règles :
 - temperature : 0.1-0.3 pour du technique/précis, 0.4-0.6 pour de l'équilibré, 0.7-1.0 pour du créatif
 - color : couleur hex qui correspond à l'ambiance du persona (ex: #3b82f6 pour technique, #10b981 pour créatif, #f59e0b pour stratégique)
+- emoji : UN SEUL emoji unicode qui représente visuellement le persona (ex: 💻 dev, 📊 data, ✍️ rédacteur, 🏋️ coach sportif, ⚖️ juriste, 🎨 créatif, 🔬 scientifique)
 - systemPrompt : détaillé, avec le rôle, le style de réponse, les contraintes éventuelles`
 
 chatRouter.post('/generate-persona', async (req, res) => {
@@ -637,7 +643,7 @@ chatRouter.post('/stream', async (req, res) => {
     : ''
 
   const currentMessages: OllamaMessage[] = [
-    { role: 'system', content: persona.systemPrompt + memoryBlock + summaryBlock + getToolSystemAddendum() },
+    { role: 'system', content: persona.systemPrompt + FORMAT_ADDENDUM + memoryBlock + summaryBlock + getToolSystemAddendum() },
     ...contextHistory.map(m => {
       if (m.role === 'tool') {
         return { role: 'tool' as const, content: m.content }
@@ -840,7 +846,7 @@ Si tu estimes que la délibération est complète, termine par [FIN].`
   const memoryBlock = getCouncilMemoryBlock(councilPersonas.map(p => p.id))
 
   const currentMessages: OllamaMessage[] = [
-    { role: 'system', content: speaker.systemPrompt + memoryBlock + councilAddendum },
+    { role: 'system', content: speaker.systemPrompt + FORMAT_ADDENDUM + memoryBlock + councilAddendum },
     { role: 'user', content: initialUserContent, ...(initialUserImages?.length ? { images: initialUserImages } : {}) },
   ]
 
@@ -1178,7 +1184,7 @@ Reste dans ton rôle et sois naturel.
 ---`
 
   const currentMessages: OllamaMessage[] = [
-    { role: 'system', content: speaker.systemPrompt + memoryBlock + salonAddendum },
+    { role: 'system', content: speaker.systemPrompt + FORMAT_ADDENDUM + memoryBlock + salonAddendum },
   ]
 
   for (const m of history) {

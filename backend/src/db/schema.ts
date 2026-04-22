@@ -8,6 +8,7 @@ export const personas = sqliteTable('personas', {
   model: text('model').notNull(),
   temperature: real('temperature').default(0.7),
   color: text('color').default('#7c3aed'),
+  emoji: text('emoji'),
   createdAt: integer('created_at').notNull(),
   updatedAt: integer('updated_at').notNull(),
 })
@@ -37,6 +38,38 @@ export const conversationSummaries = sqliteTable('conversation_summaries', {
   content: text('content').notNull(),
   coversUpToMsgId: text('covers_up_to_msg_id').notNull(),
   updatedAt: integer('updated_at').notNull(),
+})
+
+export const appSettings = sqliteTable('app_settings', {
+  key:   text('key').primaryKey(),
+  value: text('value').notNull(),
+})
+
+export const gmailAccounts = sqliteTable('gmail_accounts', {
+  id:           text('id').primaryKey(),
+  email:        text('email').notNull(),
+  accessToken:  text('access_token').notNull(),
+  refreshToken: text('refresh_token').notNull(),
+  expiresAt:    integer('expires_at').notNull(),
+  createdAt:    integer('created_at').notNull(),
+})
+
+export const agents = sqliteTable('agents', {
+  id:        text('id').primaryKey(),
+  name:      text('name').notNull(),
+  type:      text('type').notNull(), // 'email_digest' | 'morning_briefing' | 'veille' | 'meeting_summary' | 'weekly_review'
+  config:    text('config').notNull(), // JSON
+  personaId: text('persona_id'),
+  createdAt: integer('created_at').notNull(),
+  updatedAt: integer('updated_at').notNull(),
+})
+
+export const agentRuns = sqliteTable('agent_runs', {
+  id:        text('id').primaryKey(),
+  agentId:   text('agent_id').notNull(),
+  status:    text('status').notNull(), // 'running' | 'done' | 'error'
+  output:    text('output'),
+  createdAt: integer('created_at').notNull(),
 })
 
 export const messages = sqliteTable('messages', {

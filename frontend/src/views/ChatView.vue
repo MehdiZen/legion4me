@@ -1,5 +1,5 @@
 <template>
-  <div class="h-screen flex overflow-hidden" @keydown="onKey">
+  <div class="h-full flex overflow-hidden" @keydown="onKey">
     <Sidebar ref="sidebarRef" />
     <div class="flex-1 flex flex-col min-w-0 bg-surface">
       <ChatHeader />

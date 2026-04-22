@@ -6,6 +6,7 @@ export interface Persona {
   model: string
   temperature: number
   color?: string | null
+  emoji?: string | null
   createdAt: number
   updatedAt: number
 }

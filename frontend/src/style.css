@@ -79,8 +79,8 @@ html, body {
 /* ── Markdown prose (chat messages) ─────────────────────────────── */
 .prose-chat {
   font-family: var(--font-body);
-  font-size: 17px;
-  line-height: 1.55;
+  font-size: 15px;
+  line-height: 1.50;
   color: var(--text);
 }
 

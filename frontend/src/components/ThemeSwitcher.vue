@@ -1,6 +1,11 @@
 <template>
-  <!-- Trigger -->
-  <button class="theme-trigger" @click="open = true">
+  <!-- Trigger compact (rail) -->
+  <button v-if="compact" class="theme-trigger-compact" @click="open = true" title="Thème">
+    <span class="trigger-dot-compact" :style="{ background: currentTheme.accent }" />
+  </button>
+
+  <!-- Trigger full (sidebar) -->
+  <button v-else class="theme-trigger" @click="open = true">
     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
       <circle cx="12" cy="12" r="4"/>
       <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/>
@@ -115,6 +120,8 @@
 import { ref, computed } from 'vue'
 import { useThemeStore } from '@/stores/theme'
 
+const props = defineProps<{ compact?: boolean }>()
+
 const themeStore = useThemeStore()
 const open = ref(false)
 
@@ -129,7 +136,29 @@ function select(id: typeof themeStore.current) {
 </script>
 
 <style scoped>
-/* ── Trigger ── */
+/* ── Trigger compact (rail) ── */
+.theme-trigger-compact {
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: none;
+  border-radius: var(--r);
+  cursor: pointer;
+  transition: background 0.12s;
+}
+.theme-trigger-compact:hover { background: var(--s3); }
+
+.trigger-dot-compact {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+/* ── Trigger full (sidebar) ── */
 .theme-trigger {
   display: flex;
   align-items: center;

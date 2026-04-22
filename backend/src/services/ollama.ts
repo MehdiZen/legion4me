@@ -45,7 +45,10 @@ export async function chatOnce(
     }),
     signal: AbortSignal.timeout(OLLAMA_TIMEOUT_MS),
   })
-  if (!res.ok) throw new Error(`Ollama error: ${res.status}`)
+  if (!res.ok) {
+    const body = await res.text().catch(() => '')
+    throw new Error(`Ollama ${res.status}${body ? ': ' + body.slice(0, 300) : ''}`)
+  }
   const data = await res.json() as { message?: { content: string; tool_calls?: OllamaToolCall[] } }
   return {
     content: data.message?.content ?? '',
@@ -75,7 +78,10 @@ export async function streamChat(
     signal: AbortSignal.timeout(OLLAMA_TIMEOUT_MS),
   })
 
-  if (!res.ok) throw new Error(`Ollama error: ${res.status}`)
+  if (!res.ok) {
+    const body = await res.text().catch(() => '')
+    throw new Error(`Ollama ${res.status}${body ? ': ' + body.slice(0, 300) : ''}`)
+  }
   if (!res.body) throw new Error('No response body from Ollama')
 
   const reader = res.body.getReader()

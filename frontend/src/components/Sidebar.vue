@@ -74,22 +74,6 @@
     <div class="sidebar-footer">
       <div class="divider" style="margin-bottom: 8px" />
       <ThemeSwitcher />
-      <div class="divider" style="margin: 8px 0" />
-      <RouterLink to="/personas" class="footer-link">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
-          <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/>
-          <circle cx="9" cy="7" r="4"/>
-          <path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/>
-        </svg>
-        <span>Grimoire</span>
-        <span class="footer-count">{{ personaStore.personas.length }}</span>
-      </RouterLink>
-      <RouterLink to="/stats" class="footer-link">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
-          <line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/>
-        </svg>
-        <span>Statistiques</span>
-      </RouterLink>
     </div>
   </aside>
 </template>
@@ -399,36 +383,4 @@ function convPersona(conv: Conversation) {
   flex-shrink: 0;
 }
 
-.footer-link {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 8px 14px;
-  color: var(--text-2);
-  text-decoration: none;
-  transition: color 0.12s ease;
-  font-family: var(--font-ui);
-  font-size: 15px;
-  letter-spacing: 0.05em;
-}
-
-[data-theme="signal"] .footer-link {
-  font-family: var(--font-brand);
-  font-size: 12px;
-  font-weight: 600;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-}
-
-.footer-link:hover { color: var(--text); }
-
-.footer-count {
-  margin-left: auto;
-  font-family: var(--font-mono);
-  font-size: 10px;
-  color: var(--text-3);
-  background: var(--s3);
-  padding: 1px 6px;
-  border-radius: var(--r);
-}
 </style>

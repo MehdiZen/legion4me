@@ -56,11 +56,6 @@
 }
 
 /* Prose */
-[data-theme="signal"] .prose-chat {
-  font-size: 15px;
-  line-height: 1.50;
-}
-
 [data-theme="signal"] .prose-chat h1,
 [data-theme="signal"] .prose-chat h2,
 [data-theme="signal"] .prose-chat h3 {

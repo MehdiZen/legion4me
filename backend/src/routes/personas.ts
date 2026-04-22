@@ -18,7 +18,7 @@ personasRouter.get('/:id', (req, res) => {
 })
 
 personasRouter.post('/', (req, res) => {
-  const { name, description, systemPrompt, model, temperature, color } = req.body as Partial<Persona>
+  const { name, description, systemPrompt, model, temperature, color, emoji } = req.body as Partial<Persona>
 
   if (!name || !systemPrompt || !model) {
     return res.status(400).json({ error: 'name, systemPrompt, and model are required' })
@@ -33,6 +33,7 @@ personasRouter.post('/', (req, res) => {
     model,
     temperature: temperature ?? 0.7,
     color: color ?? '#7c3aed',
+    emoji: emoji ?? null,
     createdAt: now,
     updatedAt: now,
   }
@@ -45,7 +46,7 @@ personasRouter.put('/:id', (req, res) => {
   const existing = db.select().from(personas).where(eq(personas.id, req.params.id)).get()
   if (!existing) return res.status(404).json({ error: 'Persona not found' })
 
-  const { name, description, systemPrompt, model, temperature, color } = req.body as Partial<Persona>
+  const { name, description, systemPrompt, model, temperature, color, emoji } = req.body as Partial<Persona>
 
   db.update(personas).set({
     ...(name && { name }),
@@ -54,6 +55,7 @@ personasRouter.put('/:id', (req, res) => {
     ...(model && { model }),
     ...(temperature !== undefined && { temperature }),
     ...(color && { color }),
+    ...(emoji !== undefined && { emoji }),
     updatedAt: Date.now(),
   }).where(eq(personas.id, req.params.id)).run()
 

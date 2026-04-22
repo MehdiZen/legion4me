@@ -1,8 +1,12 @@
 <template>
   <div class="persona-card" @click="$emit('select', persona)">
     <div class="card-header">
-      <div class="card-sigil" :style="{ background: persona.color || 'var(--accent)' }">
-        {{ persona.name[0].toUpperCase() }}
+      <div
+        class="card-sigil"
+        :class="{ 'card-sigil--emoji': !!persona.emoji }"
+        :style="persona.emoji ? {} : { background: persona.color || 'var(--accent)' }"
+      >
+        {{ persona.emoji || persona.name[0].toUpperCase() }}
       </div>
       <div class="card-info">
         <span class="card-name">{{ persona.name }}</span>
@@ -117,6 +121,12 @@ function usePersona() {
 }
 
 [data-theme="grimoire"] .card-sigil { border-radius: 50%; }
+
+.card-sigil--emoji {
+  background: var(--s3) !important;
+  border: 1px solid var(--border);
+  font-size: 20px;
+}
 
 .card-info {
   display: flex;

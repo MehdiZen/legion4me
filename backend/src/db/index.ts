@@ -69,6 +69,43 @@ try { sqlite.exec('ALTER TABLE conversations ADD COLUMN pinned INTEGER DEFAULT 0
 try { sqlite.exec("ALTER TABLE conversations ADD COLUMN mode TEXT DEFAULT 'chat'") } catch { /* already exists */ }
 try { sqlite.exec('ALTER TABLE conversations ADD COLUMN salon_persona_ids TEXT') } catch { /* already exists */ }
 try { sqlite.exec("ALTER TABLE memories ADD COLUMN source TEXT DEFAULT 'tool'") } catch { /* already exists */ }
+try { sqlite.exec('ALTER TABLE personas ADD COLUMN emoji TEXT') } catch { /* already exists */ }
+
+// ── Agents & Settings tables ──────────────────────────────────────────────────
+
+sqlite.exec(`
+  CREATE TABLE IF NOT EXISTS app_settings (
+    key TEXT PRIMARY KEY,
+    value TEXT NOT NULL
+  );
+
+  CREATE TABLE IF NOT EXISTS gmail_accounts (
+    id TEXT PRIMARY KEY,
+    email TEXT NOT NULL,
+    access_token TEXT NOT NULL,
+    refresh_token TEXT NOT NULL,
+    expires_at INTEGER NOT NULL,
+    created_at INTEGER NOT NULL
+  );
+
+  CREATE TABLE IF NOT EXISTS agents (
+    id TEXT PRIMARY KEY,
+    name TEXT NOT NULL,
+    type TEXT NOT NULL,
+    config TEXT NOT NULL,
+    persona_id TEXT,
+    created_at INTEGER NOT NULL,
+    updated_at INTEGER NOT NULL
+  );
+
+  CREATE TABLE IF NOT EXISTS agent_runs (
+    id TEXT PRIMARY KEY,
+    agent_id TEXT NOT NULL,
+    status TEXT NOT NULL,
+    output TEXT,
+    created_at INTEGER NOT NULL
+  );
+`)
 
 // ── Indexes ───────────────────────────────────────────────────────────────────
 

@@ -3,8 +3,12 @@
 
     <!-- ── Assistant ── -->
     <template v-if="!isUser">
-      <div class="asst-sigil" :style="{ background: personaColor }">
-        {{ personaInitial }}
+      <div
+        class="asst-sigil"
+        :class="{ 'asst-sigil--emoji': !!persona?.emoji }"
+        :style="persona?.emoji ? {} : { background: personaColor }"
+      >
+        {{ persona?.emoji || personaInitial }}
       </div>
       <div class="asst-body">
         <div class="asst-meta">
@@ -229,6 +233,12 @@ const renderedContent = computed(() => {
   height: 28px;
 }
 
+.asst-sigil--emoji {
+  background: var(--s3) !important;
+  border: 1px solid var(--border);
+  font-size: 16px;
+}
+
 /* ── Assistant body ── */
 .asst-body { flex: 1; min-width: 0; max-width: 820px; }
 
@@ -390,15 +400,11 @@ const renderedContent = computed(() => {
 
 .user-text {
   font-family: var(--font-body);
-  font-size: 17px;
-  line-height: 1.7;
+  font-size: 15px;
+  line-height: 1.50;
   color: var(--text);
   white-space: pre-wrap;
   margin: 0;
-}
-
-[data-theme="signal"] .user-text {
-  font-size: 15px;
 }
 
 /* ── Edit mode ── */
@@ -411,13 +417,11 @@ const renderedContent = computed(() => {
   border-color: var(--accent);
   color: var(--text);
   font-family: var(--font-body);
-  font-size: 17px;
-  line-height: 1.7;
+  font-size: 15px;
+  line-height: 1.50;
   resize: none;
   outline: none;
   box-sizing: border-box;
   overflow: hidden;
 }
-
-[data-theme="signal"] .user-edit-textarea { font-size: 15px; }
 </style>

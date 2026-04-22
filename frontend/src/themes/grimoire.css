@@ -54,7 +54,7 @@
 }
 
 /* Prose */
-[data-theme="grimoire"] .prose-chat { font-size: 19px; }
+[data-theme="grimoire"] .prose-chat { font-size: 15px; line-height: 1.50; }
 
 /* Forms */
 [data-theme="grimoire"] .asm-input:focus {

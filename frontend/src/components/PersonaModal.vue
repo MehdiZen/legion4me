@@ -77,9 +77,24 @@
               <div class="color-pick">
                 <input v-model="form.color" type="color" class="color-input" />
                 <div class="color-preview" :style="{ background: form.color }">
-                  {{ form.name?.[0]?.toUpperCase() || '?' }}
+                  {{ form.emoji || form.name?.[0]?.toUpperCase() || '?' }}
                 </div>
               </div>
+            </div>
+          </div>
+
+          <!-- Emoji picker -->
+          <div class="field">
+            <label class="field-label">Emoji</label>
+            <div class="emoji-field">
+              <button type="button" class="emoji-display" @click="pickerOpen = !pickerOpen">
+                <span class="emoji-display-char">{{ form.emoji || '?' }}</span>
+                <span class="emoji-display-hint">{{ form.emoji ? 'Changer' : 'Choisir un emoji' }}</span>
+                <svg class="emoji-chevron" :class="{ open: pickerOpen }" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                  <polyline points="6 9 12 15 18 9"/>
+                </svg>
+              </button>
+              <div v-if="pickerOpen" ref="pickerContainer" class="emoji-picker-wrap" />
             </div>
           </div>
 
@@ -144,6 +159,7 @@
 import { reactive, ref, watch, onMounted } from 'vue'
 import { useModels } from '@/composables/useModels'
 import type { Persona } from '@/types'
+import type { Picker as PickerType } from 'emoji-mart'
 
 const props = defineProps<{ editingPersona?: Persona | null }>()
 const emit  = defineEmits<{ close: []; save: [data: Omit<Persona, 'id' | 'createdAt' | 'updatedAt'>] }>()
@@ -157,6 +173,31 @@ const form = reactive({
   temperature:  0.7,
   systemPrompt: '',
   color:        '#c8a45a',
+  emoji:        '',
+})
+
+// ── Emoji picker ──
+const pickerOpen      = ref(false)
+const pickerContainer = ref<HTMLElement | null>(null)
+
+watch(pickerContainer, async (el) => {
+  if (!el) return
+  const [{ Picker }, data] = await Promise.all([
+    import('emoji-mart'),
+    import('@emoji-mart/data'),
+  ])
+  const picker = new Picker({
+    data: data.default,
+    theme: 'dark',
+    previewPosition: 'none',
+    skinTonePosition: 'none',
+    locale: 'fr',
+    onEmojiSelect: (e: { native: string }) => {
+      form.emoji       = e.native
+      pickerOpen.value = false
+    },
+  })
+  el.appendChild(picker as unknown as Node)
 })
 
 // ── Generator ──
@@ -190,6 +231,7 @@ async function generate() {
     if (data.systemPrompt) form.systemPrompt = data.systemPrompt
     if (typeof data.temperature === 'number') form.temperature = Math.min(1, Math.max(0, data.temperature))
     if (data.color)        form.color        = data.color
+    if (data.emoji)        form.emoji        = data.emoji
     if (!form.model && genModel.value) form.model = genModel.value
     genOpen.value = false
   } catch {
@@ -208,6 +250,7 @@ onMounted(() => {
     form.temperature  = props.editingPersona.temperature
     form.systemPrompt = props.editingPersona.systemPrompt
     form.color        = props.editingPersona.color ?? '#c8a45a'
+    form.emoji        = props.editingPersona.emoji ?? ''
   }
 })
 
@@ -220,6 +263,7 @@ function submit() {
     temperature:  form.temperature,
     systemPrompt: form.systemPrompt,
     color:        form.color,
+    emoji:        form.emoji || null,
   })
 }
 </script>
@@ -513,6 +557,71 @@ function submit() {
 
 @keyframes spin { to { transform: rotate(360deg); } }
 .spin { animation: spin 0.9s linear infinite; }
+
+/* ── Emoji picker ── */
+.emoji-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.emoji-display {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 12px;
+  background: var(--s1);
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  cursor: pointer;
+  transition: border-color 0.12s, background 0.12s;
+  width: 100%;
+  text-align: left;
+}
+
+[data-theme="signal"] .emoji-display { border-radius: var(--r); }
+
+.emoji-display:hover {
+  border-color: var(--border-hi);
+  background: var(--s2);
+}
+
+.emoji-display-char {
+  font-size: 22px;
+  line-height: 1;
+  width: 28px;
+  text-align: center;
+  color: var(--text-3);
+}
+
+.emoji-display-hint {
+  font-family: var(--font-ui);
+  font-size: 13px;
+  color: var(--text-2);
+  flex: 1;
+}
+
+.emoji-chevron {
+  color: var(--text-3);
+  transition: transform 0.18s ease;
+  flex-shrink: 0;
+}
+.emoji-chevron.open { transform: rotate(180deg); }
+
+.emoji-picker-wrap {
+  border-radius: var(--r-lg);
+  overflow: hidden;
+  border: 1px solid var(--border);
+}
+
+[data-theme="signal"] .emoji-picker-wrap { border-radius: var(--r); }
+
+.emoji-picker-wrap em-emoji-picker {
+  --border-radius: 0;
+  --font-family: var(--font-ui);
+  width: 100%;
+  max-height: 340px;
+}
 
 /* ── Footer ── */
 .modal-footer {

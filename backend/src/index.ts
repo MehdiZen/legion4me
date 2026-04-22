@@ -8,6 +8,9 @@ import { chatRouter } from './routes/chat'
 import { modelsRouter } from './routes/models'
 import { memoriesRouter } from './routes/memories'
 import { statsRouter } from './routes/stats'
+import { settingsRouter } from './routes/settings'
+import { gmailRouter } from './routes/gmail'
+import { agentsRouter } from './routes/agents'
 
 dotenv.config({ path: path.resolve(__dirname, '../../backend/.env') })
 
@@ -23,6 +26,9 @@ app.use('/api/chat', chatRouter)
 app.use('/api/models', modelsRouter)
 app.use('/api/memories', memoriesRouter)
 app.use('/api/stats', statsRouter)
+app.use('/api/settings', settingsRouter)
+app.use('/api/gmail', gmailRouter)
+app.use('/api/agents', agentsRouter)
 
 // Serve frontend static files in production
 const frontendDist = path.join(__dirname, '../../frontend/dist')
