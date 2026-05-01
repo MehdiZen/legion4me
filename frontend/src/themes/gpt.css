@@ -35,6 +35,9 @@
   --r-lg: 16px;
   --r-xl: 20px;
 
+  --glass:    rgba(23,23,23,0.85);
+  --blur:     saturate(160%) blur(16px);
+
   --shadow:    0 4px 20px rgba(0, 0, 0, 0.4);
   --shadow-lg: 0 16px 48px rgba(0, 0, 0, 0.6);
 }

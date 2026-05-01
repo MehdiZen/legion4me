@@ -33,9 +33,12 @@
   --font-mono:  'IBM Plex Mono', 'Courier New', monospace;
   --font-scale: 1.5;
 
-  --r:    10px;
-  --r-lg: 16px;
-  --r-xl: 22px;
+  --r:    14px;
+  --r-lg: 20px;
+  --r-xl: 28px;
+
+  --glass:    rgba(10,10,23,0.82);
+  --blur:     saturate(180%) blur(20px);
 
   --shadow:    0 8px 32px rgba(0, 0, 0, 0.5);
   --shadow-lg: 0 20px 60px rgba(0, 0, 0, 0.7);

@@ -1,5 +1,6 @@
 <template>
   <div class="h-full flex overflow-hidden" @keydown="onKey">
+    <AmbientScene :theme="themeStore.current" />
     <Sidebar ref="sidebarRef" />
     <div class="flex-1 flex flex-col min-w-0 bg-surface">
       <ChatHeader />
@@ -13,13 +14,16 @@
 import { ref, onMounted, onUnmounted } from 'vue'
 import { usePersonaStore } from '@/stores/persona'
 import { useConversationStore } from '@/stores/conversation'
+import { useThemeStore } from '@/stores/theme'
 import Sidebar from '@/components/Sidebar.vue'
 import ChatHeader from '@/components/ChatHeader.vue'
 import ChatWindow from '@/components/ChatWindow.vue'
 import MessageInput from '@/components/MessageInput.vue'
+import AmbientScene from '@/components/AmbientScene.vue'
 
 const personaStore = usePersonaStore()
 const convStore    = useConversationStore()
+const themeStore   = useThemeStore()
 const inputRef     = ref<InstanceType<typeof MessageInput> | null>(null)
 
 function onKey(e: KeyboardEvent) {

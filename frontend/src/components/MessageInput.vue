@@ -596,7 +596,7 @@ defineExpose({ focus: () => textareaRef.value?.focus() })
   border: 1px solid var(--border);
   border-radius: var(--r-lg);
   padding: 10px 10px 10px 16px;
-  transition: border-color 0.15s ease;
+  transition: border-color 0.18s ease, box-shadow 0.18s ease;
 }
 
 [data-theme="signal"] .input-wrap {
@@ -605,6 +605,7 @@ defineExpose({ focus: () => textareaRef.value?.focus() })
 
 .input-wrap.focused {
   border-color: var(--accent);
+  box-shadow: 0 0 0 4px var(--accent-bg), 0 4px 16px rgba(0,0,0,0.3);
 }
 
 [data-theme="grimoire"] .input-wrap.focused {

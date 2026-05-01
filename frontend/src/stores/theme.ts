@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
 
-export type ThemeId = 'grimoire' | 'signal' | 'onyx' | 'gpt' | 'gemini' | 'claude'
+export type ThemeId = 'grimoire' | 'signal' | 'onyx' | 'gpt' | 'gemini' | 'claude' | 'cosmos'
 export type ThemeGroup = 'original' | 'inspired'
 
 export interface Theme {
@@ -97,6 +97,19 @@ export const THEMES: Theme[] = [
     s3:     '#d4c6b4',
     border: '#bfae98',
     text:   '#1c1510',
+  },
+  {
+    id:     'cosmos',
+    name:   'Cosmos',
+    label:  'Deep Space',
+    group:  'original',
+    accent: '#a855f7',
+    bg:     '#00010c',
+    s1:     '#02071a',
+    s2:     '#040c22',
+    s3:     '#07122e',
+    border: 'rgba(168,85,247,0.10)',
+    text:   '#dde4ff',
   },
 ]
 // ──────────────────────────────────────────────────────────────────────────

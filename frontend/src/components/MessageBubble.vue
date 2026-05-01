@@ -296,7 +296,7 @@ const renderedContent = computed(() => {
 .asst-bubble {
   background: var(--asst-bg);
   border: 1px solid var(--asst-bd);
-  border-radius: 0 var(--r-lg) var(--r-lg) var(--r-lg);
+  border-radius: 3px var(--r-lg) var(--r-lg) var(--r-lg);
   padding: 14px 18px;
   position: relative;
   overflow: hidden;
@@ -375,7 +375,7 @@ const renderedContent = computed(() => {
   width: 100%;
   background: var(--user-bg);
   border: 1px solid var(--user-bd);
-  border-radius: var(--r-lg) 0 var(--r-lg) var(--r-lg);
+  border-radius: var(--r-lg) 3px var(--r-lg) var(--r-lg);
   padding: 12px 16px;
 }
 

@@ -202,8 +202,9 @@ function convPersona(conv: Conversation) {
 }
 
 .new-chat-btn:hover:not(:disabled) {
-  background: rgba(200, 164, 90, 0.15);
+  background: var(--accent-bg);
   border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-bg);
 }
 
 [data-theme="signal"] .new-chat-btn:hover:not(:disabled) {

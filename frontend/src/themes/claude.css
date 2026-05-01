@@ -31,9 +31,12 @@
   --font-body:  'Crimson Pro', 'Georgia', serif;
   --font-mono:  'IBM Plex Mono', 'Courier New', monospace;
 
-  --r:    10px;
-  --r-lg: 16px;
-  --r-xl: 22px;
+  --r:    14px;
+  --r-lg: 20px;
+  --r-xl: 28px;
+
+  --glass:    rgba(237,224,206,0.88);
+  --blur:     saturate(160%) blur(16px);
 
   --shadow:    0 2px 14px rgba(60, 40, 20, 0.14);
   --shadow-lg: 0 14px 44px rgba(60, 40, 20, 0.22);

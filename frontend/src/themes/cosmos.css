@@ -1,0 +1,54 @@
+/* ── Theme: COSMOS ───────────────────────────────────────────────────────── */
+
+[data-theme="cosmos"] {
+  --bg:        #00010c;
+  --s1:        #02071a;
+  --s2:        #040c22;
+  --s3:        #07122e;
+  --s4:        #0b1a3e;
+  --border:    rgba(168,85,247,0.10);
+  --border-hi: rgba(168,85,247,0.40);
+
+  --accent:    #a855f7;
+  --accent-l:  #d8b4fe;
+  --accent-bg: rgba(168,85,247,0.08);
+  --accent-bd: rgba(168,85,247,0.22);
+
+  --text:      #dde4ff;
+  --text-2:    rgba(221,228,255,0.50);
+  --text-3:    rgba(221,228,255,0.24);
+
+  --danger:    #f43f5e;
+  --danger-bg: rgba(244,63,94,0.10);
+
+  --user-bg:   rgba(168,85,247,0.07);
+  --user-bd:   rgba(168,85,247,0.20);
+  --asst-bg:   rgba(168,85,247,0.03);
+  --asst-bd:   rgba(168,85,247,0.10);
+
+  --font-brand: 'Orbitron', sans-serif;
+  --font-ui:    'Space Grotesk', sans-serif;
+  --font-body:  'Space Grotesk', sans-serif;
+  --font-mono:  'JetBrains Mono', monospace;
+
+  --r:    6px;
+  --r-lg: 10px;
+  --r-xl: 16px;
+
+  --glass:    rgba(2,7,26,0.85);
+  --blur:     saturate(180%) blur(20px);
+
+  --shadow:    0 4px 28px rgba(0,0,60,0.7);
+  --shadow-lg: 0 16px 60px rgba(0,0,40,0.9);
+}
+
+/* Nebula background */
+[data-theme="cosmos"] #app::before {
+  content: '';
+  position: fixed; inset: 0;
+  pointer-events: none; z-index: 9996;
+  background:
+    radial-gradient(ellipse 70% 55% at 50% -5%, rgba(168,85,247,0.14) 0%, transparent 60%),
+    radial-gradient(ellipse 50% 40% at 95% 85%, rgba(56,189,248,0.09) 0%, transparent 50%),
+    radial-gradient(ellipse 35% 30% at 5% 60%, rgba(99,102,241,0.07) 0%, transparent 50%);
+}
