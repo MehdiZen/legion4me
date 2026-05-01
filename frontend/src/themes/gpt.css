@@ -42,7 +42,7 @@
 /* Prose */
 [data-theme="gpt"] .prose-chat {
   font-size: 15px;
-  line-height: 1.7;
+  line-height: 1.42;
   letter-spacing: -0.005em;
 }
 

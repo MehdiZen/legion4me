@@ -83,19 +83,29 @@
         </div>
 
         <!-- Edit mode -->
-        <textarea
-          v-else
-          ref="editTextareaRef"
-          v-model="editContent"
-          class="user-bubble user-edit-textarea"
-          @input="autoResizeEdit"
-          @keydown.enter.exact.prevent="confirmEdit"
-          @keydown.ctrl.enter.exact="insertNewline"
-          @keydown.meta.enter.exact="insertNewline"
-          @keydown.escape="cancelEdit"
-          @blur="cancelEdit"
-          rows="1"
-        />
+        <div v-else class="edit-wrap">
+          <textarea
+            ref="editTextareaRef"
+            v-model="editContent"
+            class="user-bubble user-edit-textarea"
+            @input="autoResizeEdit"
+            @keydown.enter.exact.prevent="confirmEdit"
+            @keydown.ctrl.enter.exact="insertNewline"
+            @keydown.meta.enter.exact="insertNewline"
+            @keydown.escape="cancelEdit"
+            @blur="cancelEdit"
+            rows="1"
+          />
+          <div class="edit-actions">
+            <button class="edit-cancel-btn" @mousedown.prevent @click="cancelEdit">Annuler</button>
+            <button class="edit-send-btn" @mousedown.prevent @click="confirmEdit">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                <line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/>
+              </svg>
+              Renvoyer
+            </button>
+          </div>
+        </div>
       </div>
     </template>
 
@@ -193,9 +203,20 @@ const personaName    = computed(() => persona.value?.name ?? 'Assistant')
 
 marked.setOptions({ breaks: true })
 
+function injectCompactLists(html: string): string {
+  const doc = new DOMParser().parseFromString(html, 'text/html')
+  doc.querySelectorAll('ul').forEach(ul => {
+    const items = Array.from(ul.querySelectorAll(':scope > li'))
+    const allShort = items.every(li => (li.textContent ?? '').trim().length < 65)
+    if (items.length > 2 && allShort)
+      ul.classList.add(items.length > 5 ? 'ul-columns-3' : 'ul-columns')
+  })
+  return doc.body.innerHTML
+}
+
 const renderedContent = computed(() => {
   if (!props.message.content) return ''
-  return DOMPurify.sanitize(marked(props.message.content) as string)
+  return DOMPurify.sanitize(injectCompactLists(marked(props.message.content) as string))
 })
 </script>
 
@@ -424,4 +445,41 @@ const renderedContent = computed(() => {
   box-sizing: border-box;
   overflow: hidden;
 }
+
+.edit-wrap { display: flex; flex-direction: column; gap: 6px; width: 100%; }
+
+.edit-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 6px;
+}
+
+.edit-cancel-btn {
+  padding: 5px 12px;
+  border-radius: var(--r);
+  border: 1px solid var(--border);
+  background: none;
+  color: var(--text-3);
+  font-family: var(--font-ui);
+  font-size: 12px;
+  cursor: pointer;
+  transition: color 0.12s, border-color 0.12s;
+}
+.edit-cancel-btn:hover { color: var(--text); border-color: var(--border-hi); }
+
+.edit-send-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 14px;
+  border-radius: var(--r);
+  border: 1px solid var(--accent-bd);
+  background: var(--accent-bg);
+  color: var(--accent);
+  font-family: var(--font-ui);
+  font-size: 12px;
+  cursor: pointer;
+  transition: background 0.12s, border-color 0.12s;
+}
+.edit-send-btn:hover { background: rgba(200, 164, 90, 0.15); border-color: var(--accent); }
 </style>

@@ -44,10 +44,7 @@
           @click="selectConv(conv)"
           :class="['conv-item', { active: convStore.active?.id === conv.id }]"
         >
-          <span
-            class="conv-indicator"
-            :style="convPersona(conv) ? { background: convPersona(conv)!.color ?? 'var(--accent)' } : {}"
-          />
+          <span class="conv-emoji">{{ convPersona(conv)?.emoji || '◈' }}</span>
           <span class="conv-text">
             <span class="conv-title">{{ conv.title || 'Nouvelle invocation' }}</span>
             <span v-if="convPersona(conv)" class="conv-persona-name">{{ convPersona(conv)!.name }}</span>
@@ -292,19 +289,17 @@ function convPersona(conv: Conversation) {
   color: var(--text);
 }
 
-.conv-indicator {
-  width: 2px;
-  min-height: 14px;
-  align-self: stretch;
-  border-radius: 2px;
-  background: transparent;
+.conv-emoji {
+  font-size: 15px;
+  line-height: 1;
   flex-shrink: 0;
-  transition: background 0.15s ease;
+  opacity: 0.75;
+  transition: opacity 0.12s ease;
 }
 
-.conv-item:hover .conv-indicator,
-.conv-item.active .conv-indicator {
-  background: var(--accent);
+.conv-item:hover .conv-emoji,
+.conv-item.active .conv-emoji {
+  opacity: 1;
 }
 
 .conv-text {

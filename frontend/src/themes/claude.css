@@ -42,7 +42,7 @@
 /* Prose */
 [data-theme="claude"] .prose-chat {
   font-size: 15px;
-  line-height: 1.50;
+  line-height: 1.38;
 }
 
 [data-theme="claude"] .prose-chat h1 { font-weight: 600; }

@@ -95,6 +95,11 @@ html, body {
 .prose-chat ul li { padding-left: 1.2em; position: relative; margin-bottom: 0.3em; }
 .prose-chat ul li::before { content: '–'; position: absolute; left: 0; color: var(--accent); }
 
+.prose-chat ul.ul-columns { columns: 2; column-gap: 1.8em; }
+.prose-chat ul.ul-columns-3 { columns: 3; column-gap: 1.8em; }
+.prose-chat ul.ul-columns li,
+.prose-chat ul.ul-columns-3 li { break-inside: avoid; }
+
 .prose-chat ol { list-style: decimal; padding-left: 1.5em; margin-bottom: 0.85em; }
 .prose-chat ol li { margin-bottom: 0.3em; }
 
