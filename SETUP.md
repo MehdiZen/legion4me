@@ -41,15 +41,14 @@ L'app ne fonctionne pas sans Ollama — c'est lui qui fait tourner les modèles.
 
 ### 4. Modèles Ollama
 
-Il faut au moins un modèle pour créer des personas. Exemple :
+Il faut au moins un modèle pour créer des personas.
 
 ```bash
-ollama pull qwen3:8b        # bon rapport qualité/vitesse
-ollama pull qwen3:14b       # plus précis, plus lent
+ollama pull qwen3.5:9b      # modèle par défaut de l'app
 ollama pull llava:7b        # si tu veux envoyer des images
 ```
 
-N'importe quel modèle listé par `ollama list` fonctionne dans l'app.
+`qwen3.5:9b` n'est pas un simple exemple : c'est le modèle sur lequel l'app retombe quand un agent tourne sans persona associée. Sans lui, ces agents échoueront. Pour tout le reste, n'importe quel modèle listé par `ollama list` fonctionne et se choisit persona par persona.
 
 ---
 
@@ -79,11 +78,14 @@ Le fichier `backend/.env` est créé à partir de `.env.example`. La config par 
 | `DB_PATH` | `./asmodeus.db` | Chemin de la base SQLite (créée automatiquement) |
 | `OLLAMA_URL` | auto-détecté | À décommenter si l'auto-détection échoue |
 | `TAVILY_API_KEY` | — | Optionnel — active la recherche web |
+| `GMAIL_REDIRECT_URI` | `http://localhost:3001/api/gmail/callback` | Optionnel — URL de callback OAuth Google |
 
 **Si Ollama n'est pas trouvé automatiquement**, décommenter et ajuster dans `backend/.env` :
 ```env
 OLLAMA_URL=http://localhost:11434
 ```
+
+Les identifiants OAuth Google ne passent pas par le `.env` : ils se saisissent dans l'écran Paramètres de l'app et sont stockés en base.
 
 ---
 
@@ -124,7 +126,7 @@ Créer un compte sur https://tavily.com (gratuit), récupérer une clé API et l
 TAVILY_API_KEY=tvly-...
 ```
 
-Sans cette clé, l'outil de recherche web est silencieusement désactivé.
+Sans cette clé, l'outil de recherche web est silencieusement désactivé, et l'agent de veille refuse de tourner en le disant explicitement.
 
 ---
 
@@ -135,6 +137,9 @@ Sans cette clé, l'outil de recherche web est silencieusement désactivé.
 
 **L'app démarre mais les personas ne répondent pas**
 → Ollama n'est pas joignable. Vérifier avec `ollama list` et ajuster `OLLAMA_URL` dans `.env`.
+
+**Un agent échoue alors que le chat fonctionne**
+→ L'agent n'a probablement pas de persona associée, et retombe donc sur `qwen3.5:9b`. Soit tu l'installes, soit tu associes une persona à l'agent.
 
 **WSL2 : Ollama non trouvé automatiquement**
 → Décommenter `OLLAMA_URL=http://localhost:11434` dans `backend/.env` ou vérifier que Ollama est bien lancé côté Windows.
