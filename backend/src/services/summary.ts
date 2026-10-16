@@ -13,6 +13,19 @@ interface MsgRow {
   toolCalls?: string | null
 }
 
+/**
+ * Checkpoint de résumé d'une conversation, s'il existe.
+ *
+ * Permet aux appelants de ne charger que les messages postérieurs plutôt que
+ * tout l'historique — les messages absorbés ne servent plus qu'au résumé.
+ */
+export function getSummaryCheckpoint(conversationId: string): { content: string; coversUpToMsgId: string } | null {
+  const row = db.select().from(conversationSummaries)
+    .where(eq(conversationSummaries.conversationId, conversationId))
+    .get()
+  return row ? { content: row.content, coversUpToMsgId: row.coversUpToMsgId } : null
+}
+
 function formatForSummary(msgs: MsgRow[]): string {
   return msgs.map(m => {
     const role = m.role === 'user' ? 'Utilisateur' : 'Assistant'

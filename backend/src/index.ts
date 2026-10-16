@@ -1,6 +1,6 @@
+import './env'
 import express from 'express'
 import cors from 'cors'
-import dotenv from 'dotenv'
 import path from 'path'
 import { personasRouter } from './routes/personas'
 import { conversationsRouter } from './routes/conversations'
@@ -11,8 +11,6 @@ import { statsRouter } from './routes/stats'
 import { settingsRouter } from './routes/settings'
 import { gmailRouter } from './routes/gmail'
 import { agentsRouter } from './routes/agents'
-
-dotenv.config({ path: path.resolve(__dirname, '../../backend/.env') })
 
 const app = express()
 const PORT = process.env.PORT || 3001
@@ -30,6 +28,12 @@ app.use('/api/settings', settingsRouter)
 app.use('/api/gmail', gmailRouter)
 app.use('/api/agents', agentsRouter)
 
+// Une route /api inconnue doit répondre 404 en JSON, pas la SPA :
+// sinon le client reçoit du HTML en 200 et échoue au parsing JSON.
+app.use('/api', (_req, res) => {
+  res.status(404).json({ error: 'Route inconnue' })
+})
+
 // Serve frontend static files in production
 const frontendDist = path.join(__dirname, '../../frontend/dist')
 app.use(express.static(frontendDist))
@@ -38,5 +42,5 @@ app.get('*', (_req, res) => {
 })
 
 app.listen(PORT, () => {
-  console.log(`ASMODEUS → http://localhost:${PORT}`)
+  console.log(`LEGION4ME → http://localhost:${PORT}`)
 })

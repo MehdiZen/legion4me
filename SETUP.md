@@ -1,4 +1,4 @@
-# Setup — Asmodeus
+# Installation de Legion4me
 
 Guide d'installation pour faire tourner l'app en local.
 
@@ -6,7 +6,7 @@ Guide d'installation pour faire tourner l'app en local.
 
 ## Prérequis
 
-### 1. Node.js ≥ 18
+### 1. Node.js 20.3 ou plus récent
 
 ```bash
 node -v  # vérifier la version
@@ -56,7 +56,7 @@ ollama pull llava:7b        # si tu veux envoyer des images
 
 ```bash
 git clone <repo>
-cd asmodeus
+cd legion4me
 
 # Créer le fichier d'environnement
 cp backend/.env.example backend/.env
@@ -75,7 +75,7 @@ Le fichier `backend/.env` est créé à partir de `.env.example`. La config par 
 |----------|--------|-------------|
 | `PORT` | `3001` | Port du backend |
 | `FRONTEND_URL` | `http://localhost:5173` | Origine CORS autorisée |
-| `DB_PATH` | `./asmodeus.db` | Chemin de la base SQLite (créée automatiquement) |
+| `DB_PATH` | `./legion4me.db` | Chemin de la base SQLite (créée automatiquement) |
 | `OLLAMA_URL` | auto-détecté | À décommenter si l'auto-détection échoue |
 | `TAVILY_API_KEY` | — | Optionnel — active la recherche web |
 | `GMAIL_REDIRECT_URI` | `http://localhost:3001/api/gmail/callback` | Optionnel — URL de callback OAuth Google |

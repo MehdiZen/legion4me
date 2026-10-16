@@ -64,6 +64,7 @@ import { ref, onMounted, onUnmounted } from 'vue'
 import { usePersonaStore } from '@/stores/persona'
 import { useConversationStore } from '@/stores/conversation'
 import type { Persona } from '@/types'
+import { api } from '@/lib/api'
 
 const personaStore = usePersonaStore()
 const convStore    = useConversationStore()
@@ -75,11 +76,7 @@ async function selectPersona(p: Persona) {
   open.value = false
   if (convStore.active) {
     convStore.active.personaId = p.id
-    await fetch(`/api/conversations/${convStore.active.id}`, {
-      method: 'PATCH',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ personaId: p.id }),
-    })
+    await api.patch(`/conversations/${convStore.active.id}`, { personaId: p.id })
   }
 }
 

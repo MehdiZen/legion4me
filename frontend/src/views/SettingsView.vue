@@ -80,6 +80,7 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
+import { api } from '@/lib/api'
 
 const route = useRoute()
 
@@ -102,8 +103,7 @@ onMounted(async () => {
 
 async function loadSettings() {
   try {
-    const res = await fetch('/api/settings')
-    const data = await res.json() as Record<string, string>
+    const data = await api.get<Record<string, string>>('/settings')
     googleClientId.value     = data.google_client_id ?? ''
     googleClientSecret.value = ''
   } catch {}
@@ -114,11 +114,7 @@ async function saveGoogle() {
   if (googleClientId.value.trim())     body.google_client_id     = googleClientId.value.trim()
   if (googleClientSecret.value.trim()) body.google_client_secret = googleClientSecret.value.trim()
 
-  await fetch('/api/settings', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(body),
-  })
+  await api.post('/settings', body)
   googleSaved.value = true
   setTimeout(() => { googleSaved.value = false }, 2500)
   await loadGmailAuthUrl()
@@ -126,20 +122,14 @@ async function saveGoogle() {
 
 async function loadGmailAccounts() {
   try {
-    const res = await fetch('/api/gmail/accounts')
-    gmailAccounts.value = await res.json()
+    gmailAccounts.value = await api.get('/gmail/accounts')
   } catch {}
 }
 
 async function loadGmailAuthUrl() {
   try {
-    const res = await fetch('/api/gmail/auth-url')
-    if (res.ok) {
-      const data = await res.json()
-      gmailAuthUrl.value = data.url
-    } else {
-      gmailAuthUrl.value = ''
-    }
+    const data = await api.get<{ url: string }>('/gmail/auth-url')
+    gmailAuthUrl.value = data.url
   } catch {
     gmailAuthUrl.value = ''
   }
@@ -147,7 +137,7 @@ async function loadGmailAuthUrl() {
 
 async function removeAccount(id: string) {
   if (!confirm('Déconnecter ce compte ?')) return
-  await fetch(`/api/gmail/accounts/${id}`, { method: 'DELETE' })
+  await api.del(`/gmail/accounts/${id}`)
   gmailAccounts.value = gmailAccounts.value.filter(a => a.id !== id)
 }
 

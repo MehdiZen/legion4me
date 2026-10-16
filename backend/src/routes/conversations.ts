@@ -1,8 +1,8 @@
 import { Router } from 'express'
 import { db } from '../db'
-import { conversations, messages } from '../db/schema'
+import { conversations, messages, conversationSummaries } from '../db/schema'
 import { eq, desc, sql } from 'drizzle-orm'
-import { chatOnce } from '../services/ollama'
+import { decodeDataUri, toImageUrls } from '../services/files/images'
 
 export const conversationsRouter = Router()
 
@@ -48,11 +48,47 @@ conversationsRouter.get('/:id/messages', (req, res) => {
     return true
   })
 
-  res.json(displayMsgs.map(m => ({
-    ...m,
-    images: m.images ? JSON.parse(m.images) : null,
-    files:  m.files  ? JSON.parse(m.files)  : null,
-  })))
+  // Les images ne sont pas sérialisées ici : on renvoie une URL par image.
+  // Inliner le base64 ferait des dizaines de Mo par conversation.
+  res.json(displayMsgs.map(m => {
+    let stored: string[] | null = null
+    try { stored = m.images ? JSON.parse(m.images) as string[] : null } catch { stored = null }
+    return {
+      ...m,
+      images: toImageUrls(m.conversationId, m.id, stored),
+      files:  m.files ? JSON.parse(m.files) : null,
+    }
+  }))
+})
+
+// Sert une image de message à la demande. Le contenu d'un message ne change
+// jamais : on peut le mettre en cache agressivement côté navigateur.
+conversationsRouter.get('/:id/messages/:msgId/images/:idx', (req, res) => {
+  const row = db.select({ images: messages.images, conversationId: messages.conversationId })
+    .from(messages)
+    .where(eq(messages.id, req.params.msgId))
+    .get()
+
+  if (!row || row.conversationId !== req.params.id) {
+    return res.status(404).json({ error: 'Message introuvable' })
+  }
+
+  let stored: string[]
+  try {
+    stored = row.images ? JSON.parse(row.images) as string[] : []
+  } catch {
+    return res.status(500).json({ error: 'Images illisibles' })
+  }
+
+  const index = Number(req.params.idx)
+  const dataUri = Number.isInteger(index) ? stored[index] : undefined
+  if (!dataUri) return res.status(404).json({ error: 'Image introuvable' })
+
+  const decoded = decodeDataUri(dataUri)
+  if (!decoded) return res.status(415).json({ error: 'Format d\'image non supporté' })
+
+  res.setHeader('Cache-Control', 'private, max-age=31536000, immutable')
+  res.type(decoded.mime).send(decoded.buffer)
 })
 
 conversationsRouter.post('/', (req, res) => {
@@ -87,8 +123,12 @@ conversationsRouter.patch('/:id', (req, res) => {
 })
 
 conversationsRouter.delete('/:id', (req, res) => {
-  db.delete(messages).where(eq(messages.conversationId, req.params.id)).run()
-  db.delete(conversations).where(eq(conversations.id, req.params.id)).run()
+  // Suppression en cascade manuelle : aucune FK n'est déclarée en base
+  db.transaction(() => {
+    db.delete(messages).where(eq(messages.conversationId, req.params.id)).run()
+    db.delete(conversationSummaries).where(eq(conversationSummaries.conversationId, req.params.id)).run()
+    db.delete(conversations).where(eq(conversations.id, req.params.id)).run()
+  })
   res.status(204).send()
 })
 
@@ -97,20 +137,3 @@ conversationsRouter.delete('/:id/messages/:msgId', (req, res) => {
   res.status(204).send()
 })
 
-conversationsRouter.post('/:id/generate-title', async (req, res) => {
-  const { model, firstMessage } = req.body as { model: string; firstMessage: string }
-  if (!model || !firstMessage) return res.status(400).json({ error: 'model and firstMessage required' })
-
-  try {
-    const { content } = await chatOnce(model, [
-      { role: 'system', content: 'Génère un titre court (5 mots max) pour cette conversation. Réponds UNIQUEMENT avec le titre, sans guillemets, sans ponctuation finale.' },
-      { role: 'user', content: firstMessage },
-    ], 0.3, undefined, false)
-
-    const title = content.trim().slice(0, 60)
-    db.update(conversations).set({ title, updatedAt: Date.now() }).where(eq(conversations.id, req.params.id)).run()
-    res.json({ title })
-  } catch {
-    res.status(500).json({ error: 'Title generation failed' })
-  }
-})

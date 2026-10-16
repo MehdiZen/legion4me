@@ -1,5 +1,15 @@
 import { execSync } from 'child_process'
 import type { OllamaMessage, OllamaToolCall } from '../types'
+import { OLLAMA_TIMEOUT_MS } from '../constants'
+
+/**
+ * Combine le timeout interne avec un éventuel signal d'annulation appelant,
+ * pour qu'une déconnexion client interrompe la génération immédiatement.
+ */
+function requestSignal(external?: AbortSignal): AbortSignal {
+  const timeout = AbortSignal.timeout(OLLAMA_TIMEOUT_MS)
+  return external ? AbortSignal.any([external, timeout]) : timeout
+}
 
 function resolveOllamaUrl(): string {
   if (process.env.OLLAMA_URL) return process.env.OLLAMA_URL
@@ -23,14 +33,13 @@ export async function getModels(): Promise<string[]> {
   return data.models.map(m => m.name)
 }
 
-const OLLAMA_TIMEOUT_MS = 5 * 60 * 1000 // 5 min
-
 export async function chatOnce(
   model: string,
   messages: OllamaMessage[],
   temperature = 0.5,
   tools?: object[],
   think?: boolean,
+  signal?: AbortSignal,
 ): Promise<{ content: string; toolCalls?: OllamaToolCall[] }> {
   const res = await fetch(`${OLLAMA_URL}/api/chat`, {
     method: 'POST',
@@ -43,7 +52,7 @@ export async function chatOnce(
       options: { temperature },
       ...(think !== undefined ? { think } : {}),
     }),
-    signal: AbortSignal.timeout(OLLAMA_TIMEOUT_MS),
+    signal: requestSignal(signal),
   })
   if (!res.ok) {
     const body = await res.text().catch(() => '')
@@ -64,6 +73,7 @@ export async function streamChat(
   onChunk: (content: string) => void,
   onThinking?: (thinking: string) => void,
   extraOptions?: Record<string, unknown>,
+  signal?: AbortSignal,
 ): Promise<{ toolCalls?: OllamaToolCall[]; fullContent: string; tokensIn?: number; tokensOut?: number }> {
   const res = await fetch(`${OLLAMA_URL}/api/chat`, {
     method: 'POST',
@@ -75,7 +85,7 @@ export async function streamChat(
       tools: tools.length ? tools : undefined,
       options: { temperature, ...extraOptions },
     }),
-    signal: AbortSignal.timeout(OLLAMA_TIMEOUT_MS),
+    signal: requestSignal(signal),
   })
 
   if (!res.ok) {

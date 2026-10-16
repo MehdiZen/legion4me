@@ -3,7 +3,7 @@ import { drizzle } from 'drizzle-orm/better-sqlite3'
 import * as schema from './schema'
 import path from 'path'
 
-const dbPath = process.env.DB_PATH || path.join(process.cwd(), 'asmodeus.db')
+const dbPath = process.env.DB_PATH || path.join(process.cwd(), 'legion4me.db')
 const sqlite = new Database(dbPath)
 
 sqlite.pragma('journal_mode = WAL')

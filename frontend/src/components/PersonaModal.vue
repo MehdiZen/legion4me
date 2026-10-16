@@ -160,6 +160,16 @@ import { reactive, ref, watch, onMounted } from 'vue'
 import { useModels } from '@/composables/useModels'
 import type { Persona } from '@/types'
 import type { Picker as PickerType } from 'emoji-mart'
+import { api } from '@/lib/api'
+
+interface GeneratedPersona {
+  name?: string
+  description?: string
+  systemPrompt?: string
+  temperature?: number
+  color?: string
+  emoji?: string
+}
 
 const props = defineProps<{ editingPersona?: Persona | null }>()
 const emit  = defineEmits<{ close: []; save: [data: Omit<Persona, 'id' | 'createdAt' | 'updatedAt'>] }>()
@@ -218,13 +228,10 @@ async function generate() {
   genLoading.value = true
   genError.value = null
   try {
-    const res = await fetch('/api/chat/generate-persona', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ description: genPrompt.value, model: genModel.value }),
+    const data = await api.post<GeneratedPersona>('/chat/generate-persona', {
+      description: genPrompt.value,
+      model: genModel.value,
     })
-    const data = await res.json()
-    if (!res.ok) { genError.value = data.error ?? 'Erreur de génération'; return }
 
     if (data.name)         form.name         = data.name
     if (data.description)  form.description  = data.description
@@ -234,8 +241,8 @@ async function generate() {
     if (data.emoji)        form.emoji        = data.emoji
     if (!form.model && genModel.value) form.model = genModel.value
     genOpen.value = false
-  } catch {
-    genError.value = 'Impossible de contacter le backend'
+  } catch (err) {
+    genError.value = err instanceof Error ? err.message : 'Impossible de contacter le backend'
   } finally {
     genLoading.value = false
   }

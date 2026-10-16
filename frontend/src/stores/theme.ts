@@ -114,7 +114,7 @@ export const THEMES: Theme[] = [
 ]
 // ──────────────────────────────────────────────────────────────────────────
 
-const STORAGE_KEY = 'asmodeus-theme'
+const STORAGE_KEY = 'legion4me-theme'
 
 export const useThemeStore = defineStore('theme', () => {
   const stored = localStorage.getItem(STORAGE_KEY) as ThemeId | null

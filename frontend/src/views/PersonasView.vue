@@ -234,6 +234,7 @@ import { useMemoryStore } from '@/stores/memory'
 import PersonaCard  from '@/components/PersonaCard.vue'
 import PersonaModal from '@/components/PersonaModal.vue'
 import type { Persona, Conversation } from '@/types'
+import { api } from '@/lib/api'
 
 const personaStore  = usePersonaStore()
 const convStore     = useConversationStore()
@@ -267,12 +268,11 @@ const userMemories = computed(() => allMemories.value.filter(m => m.source === '
 const toolMemories = computed(() => allMemories.value.filter(m => m.source !== 'user'))
 
 async function loadAllMemories() {
-  const res = await fetch('/api/memories')
-  allMemories.value = await res.json()
+  allMemories.value = await api.get('/memories')
 }
 
 async function deleteAnyMemory(id: string) {
-  await fetch(`/api/memories/${id}`, { method: 'DELETE' })
+  await api.del(`/memories/${id}`)
   allMemories.value = allMemories.value.filter(m => m.id !== id)
   memStore.globalMemories  = memStore.globalMemories.filter(m => m.id !== id)
   memStore.personaMemories = memStore.personaMemories.filter(m => m.id !== id)

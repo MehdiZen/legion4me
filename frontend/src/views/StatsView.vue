@@ -67,6 +67,7 @@
 
 <script setup lang="ts">
 import { ref, onMounted, computed } from 'vue'
+import { api } from '@/lib/api'
 
 interface PersonaStats {
   personaId: string | null
@@ -87,9 +88,11 @@ const loading = ref(true)
 const stats = ref<Stats>({ total: { tokensIn: 0, tokensOut: 0, messages: 0, sizeBytes: 0 }, byPersona: [] })
 
 onMounted(async () => {
-  const res = await fetch('/api/stats')
-  stats.value = await res.json()
-  loading.value = false
+  try {
+    stats.value = await api.get<Stats>('/stats')
+  } finally {
+    loading.value = false
+  }
 })
 
 function fmt(n: number): string {

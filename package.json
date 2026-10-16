@@ -1,5 +1,5 @@
 {
-  "name": "asmodeus",
+  "name": "legion4me",
   "version": "1.0.0",
   "private": true,
   "workspaces": ["backend", "frontend"],

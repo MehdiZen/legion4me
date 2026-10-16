@@ -3,7 +3,7 @@
 @tailwind utilities;
 
 /* ═══════════════════════════════════════════════════════════════════
-   ASMODEUS — Design System
+   LEGION4ME — Design System
    ═══════════════════════════════════════════════════════════════════
    Themes: grimoire | signal | onyx
    To add a new theme:
@@ -390,21 +390,23 @@ html, body {
 .ink-blob {
   position: absolute;
   border-radius: 40% 60% 55% 45%;
-  background: rgba(30,21,16,0.09);
+  background: rgba(30,21,16,0.14);
+  mix-blend-mode: multiply;
   animation: inkSpread 4s ease-out forwards;
   pointer-events: none;
 }
 
 .ink-line {
   position: absolute; height: 1.5px;
-  background: linear-gradient(90deg, transparent, rgba(30,21,16,0.12), transparent);
+  background: linear-gradient(90deg, transparent, rgba(30,21,16,0.18), transparent);
+  mix-blend-mode: multiply;
   animation: inkDrop 3s ease-out forwards;
   pointer-events: none;
 }
 
-.page-edge-left  { position: absolute; left: 0; top: 0; bottom: 0; width: 20px;  background: linear-gradient(90deg,  rgba(120,70,20,0.10), transparent); pointer-events: none; }
-.page-edge-right { position: absolute; right: 0; top: 0; bottom: 0; width: 20px; background: linear-gradient(270deg, rgba(120,70,20,0.10), transparent); pointer-events: none; }
-.page-edge-top   { position: absolute; top: 0; left: 0; right: 0; height: 16px;  background: linear-gradient(180deg, rgba(120,70,20,0.08), transparent); pointer-events: none; }
+.page-edge-left  { position: absolute; left: 0; top: 0; bottom: 0; width: 20px;  background: linear-gradient(90deg,  rgba(120,70,20,0.18), transparent); pointer-events: none; }
+.page-edge-right { position: absolute; right: 0; top: 0; bottom: 0; width: 20px; background: linear-gradient(270deg, rgba(120,70,20,0.18), transparent); pointer-events: none; }
+.page-edge-top   { position: absolute; top: 0; left: 0; right: 0; height: 16px;  background: linear-gradient(180deg, rgba(120,70,20,0.14), transparent); pointer-events: none; }
 
 /* ── Grimoire canvas ── */
 @keyframes wizardBob {

@@ -4,7 +4,7 @@
     <!-- Empty state -->
     <div v-if="!convStore.active" class="empty-state">
       <div class="empty-glyph">⬡</div>
-      <p class="empty-title">ASMODEUS</p>
+      <p class="empty-title">LEGION4ME</p>
       <p class="empty-sub">Sélectionne un persona puis commence une invocation</p>
     </div>
 

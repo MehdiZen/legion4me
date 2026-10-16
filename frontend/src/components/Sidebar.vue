@@ -2,7 +2,7 @@
   <aside class="sidebar">
     <!-- Brand -->
     <div class="brand">
-      <span class="brand-name">ASMODEUS</span>
+      <span class="brand-name">LEGION4ME</span>
       <span class="brand-sub">Local Intelligence</span>
     </div>
 

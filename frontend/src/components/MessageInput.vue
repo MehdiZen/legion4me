@@ -185,6 +185,7 @@
 import { ref, computed, nextTick, watch } from 'vue'
 import { usePersonaStore } from '@/stores/persona'
 import { useConversationStore } from '@/stores/conversation'
+import { api } from '@/lib/api'
 
 const personaStore = usePersonaStore()
 const convStore    = useConversationStore()
@@ -320,16 +321,10 @@ async function extractFile(file: File) {
       reader.onload = (e) => resolve((e.target?.result as string).split(',')[1])
       reader.readAsDataURL(file)
     })
-    const res = await fetch('/api/chat/extract-file', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ name: file.name, base64, mimeType: file.type || 'text/plain' }),
-    })
-    if (!res.ok) {
-      const err = await res.json().catch(() => ({ error: `HTTP ${res.status}` }))
-      throw new Error(err.error || 'Extraction échouée')
-    }
-    const data = await res.json() as { mode: 'text' | 'vision'; content?: string; images?: string[]; truncated: boolean; chars: number }
+    const data = await api.post<{ mode: 'text' | 'vision'; content?: string; images?: string[]; truncated: boolean; chars: number }>(
+      '/chat/extract-file',
+      { name: file.name, base64, mimeType: file.type || 'text/plain' },
+    )
     attachedFile.value = { name: file.name, ...data }
   } catch (err) {
     fileError.value = err instanceof Error ? err.message : 'Erreur inconnue'

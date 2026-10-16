@@ -26,9 +26,9 @@ export function useGrimoireCanvas(
       x: fromLeft ? -80 : canvas.width + 80,
       y: canvas.height * 0.15 + Math.random() * canvas.height * 0.35,
       dir: fromLeft ? 1 : -1,
-      speed: 1.4 + Math.random() * 0.8,
+      speed: 0.9 + Math.random() * 0.6,
       wingPhase: Math.random() * Math.PI * 2,
-      size: 1 + Math.random() * 0.5,
+      size: 1.4 + Math.random() * 0.8,
     })
   }
 
@@ -54,8 +54,18 @@ export function useGrimoireCanvas(
     const body:     [number, number][] = [[2,2],[2,3],[3,2],[3,3],[4,2],[4,3],[5,2],[5,3],[6,2],[6,3]]
     const head:     [number, number][] = [[7,1],[7,2],[7,3],[8,1],[8,2],[8,3],[9,2]]
     const tail:     [number, number][] = [[0,3],[1,3],[1,2]]
-    const wingUp:   [number, number][] = [[3,-2],[4,-2],[4,-1],[5,-1],[5,0],[3,-1]]
-    const wingDown: [number, number][] = [[3,4],[4,4],[4,5],[5,5],[5,6],[3,5]]
+    const wingUp:   [number, number][] = [
+      [2,-3],[3,-3],[4,-3],[5,-3],[6,-3],
+      [2,-2],[3,-2],[4,-2],[5,-2],
+      [3,-1],[4,-1],[5,-1],
+      [3, 0],[4, 0],
+    ]
+    const wingDown: [number, number][] = [
+      [2, 4],[3, 4],[4, 4],[5, 4],[6, 4],
+      [2, 5],[3, 5],[4, 5],[5, 5],
+      [3, 6],[4, 6],[5, 6],
+      [3, 7],[4, 7],
+    ]
 
     const wFrame = Math.floor((wing / (Math.PI * 2)) * 4) % 2
     const wingPixels = wFrame === 0 ? wingUp : wingDown
@@ -124,6 +134,7 @@ export function useGrimoireCanvas(
   }
 
   function start() {
+    stop()
     const maybeCanvas = canvasRef.value
     if (!maybeCanvas) return
     const canvas: HTMLCanvasElement = maybeCanvas
@@ -144,14 +155,17 @@ export function useGrimoireCanvas(
     }, 5000)
 
     function draw() {
-      if (!isActive.value) return
+      if (!isActive.value) {
+        raf = null
+        return
+      }
       state.t += 0.016
       ctx.clearRect(0, 0, canvas.width, canvas.height)
 
       for (let i = state.dragons.length - 1; i >= 0; i--) {
         const d = state.dragons[i]
         d.x += d.speed * d.dir
-        d.wingPhase += 0.08
+        d.wingPhase += 0.12
         drawPixelDragon(ctx, d.x, d.y, d.dir, d.wingPhase, d.size)
         if (d.x > canvas.width + 120 || d.x < -120) state.dragons.splice(i, 1)
       }

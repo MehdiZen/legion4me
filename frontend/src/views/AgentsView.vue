@@ -103,6 +103,7 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
 import { marked } from 'marked'
+import DOMPurify from 'dompurify'
 import { useAgentsStore, type Agent, type AgentRun } from '@/stores/agents'
 import AgentCard from '@/components/AgentCard.vue'
 import AgentModal from '@/components/AgentModal.vue'
@@ -184,8 +185,10 @@ function closeOutput() {
   activeRun.value = null
 }
 
+// La sortie d'un agent dérive de contenus tiers (corps d'emails, pages web) :
+// elle doit être sanitisée avant tout rendu en v-html.
 function renderMd(text: string): string {
-  return marked.parse(text, { async: false }) as string
+  return DOMPurify.sanitize(marked.parse(text, { async: false }) as string)
 }
 </script>
 

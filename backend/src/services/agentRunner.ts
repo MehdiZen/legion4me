@@ -51,9 +51,20 @@ function periodToMs(period: EmailDigestConfig['period']): number {
   }
 }
 
+/**
+ * Modèle Ollama de l'agent — celui de son persona.
+ *
+ * Sans persona il n'y a pas de modèle par défaut valable : mieux vaut échouer
+ * avec un message clair qu'un 404 Ollama sur un tag inexistant.
+ */
 function getPersonaModel(personaId: string | null | undefined): string {
-  if (!personaId) return 'qwen3.5:9b'
-  return db.select().from(personas).where(eq(personas.id, personaId)).get()?.model ?? 'qwen3.5:9b'
+  const model = personaId
+    ? db.select().from(personas).where(eq(personas.id, personaId)).get()?.model
+    : undefined
+  if (!model) {
+    throw new Error("Aucun persona valide associé à cet agent — assigne-lui un persona pour définir le modèle à utiliser.")
+  }
+  return model
 }
 
 async function fetchWeather(city: string): Promise<string> {

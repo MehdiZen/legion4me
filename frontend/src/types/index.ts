@@ -28,7 +28,7 @@ export interface Message {
   conversationId: string
   role: 'user' | 'assistant' | 'tool' | 'system'
   content: string
-  images?: string[] | null // base64 data URIs for display
+  images?: string[] | null // URLs servies par l'API, pas du base64 (cf. services/files/images.ts)
   files?: Array<{ name: string; mode: 'text' | 'vision'; chars: number; truncated: boolean }> | null
   personaId?: string | null
   model?: string | null

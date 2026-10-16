@@ -144,7 +144,7 @@
             <div class="field">
               <label class="checkbox-item">
                 <input type="checkbox" v-model="weeklyConfig.includeConversations" />
-                Inclure l'historique des conversations Asmodeus
+                Inclure l'historique des conversations Legion4me
               </label>
             </div>
           </template>
@@ -165,6 +165,7 @@
 import { ref, computed, onMounted, watch } from 'vue'
 import { useAgentsStore, type Agent, type AgentType } from '@/stores/agents'
 import { usePersonaStore } from '@/stores/persona'
+import { api } from '@/lib/api'
 
 const props = defineProps<{ agent: Agent | null }>()
 const emit  = defineEmits<{ close: []; saved: [] }>()
@@ -246,18 +247,14 @@ function loadConfig(config: Record<string, unknown>) {
 
 async function loadGmailAccounts() {
   try {
-    const res = await fetch('/api/gmail/accounts')
-    gmailAccounts.value = await res.json()
+    gmailAccounts.value = await api.get('/gmail/accounts')
   } catch { gmailAccounts.value = [] }
 }
 
 async function loadGmailAuthUrl() {
   try {
-    const res = await fetch('/api/gmail/auth-url')
-    if (res.ok) {
-      const data = await res.json()
-      gmailAuthUrl.value = data.url
-    }
+    const data = await api.get<{ url: string }>('/gmail/auth-url')
+    gmailAuthUrl.value = data.url
   } catch { /* Google not configured */ }
 }
 
