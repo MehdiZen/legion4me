@@ -1,139 +1,113 @@
-# Asmodeus
+# Legion4me
 
-Assistant IA personnel qui tourne **entièrement en local**. Personas configurables, agents
-programmables, mémoire persistante. **Node/TypeScript · Vue 3 · Drizzle/SQLite · Ollama**.
+[Version française](README.fr.md)
 
-Aucune donnée ne quitte la machine, sauf les appels explicites aux outils (recherche web,
-Gmail, météo). Les modèles tournent sur ta propre carte graphique.
+Legion4me is a personal AI assistant that runs entirely on your own machine. You configure personas, on-demand agents and a persistent memory on top of local models served by Ollama. The backend is written in Node and TypeScript, the interface in Vue 3, and everything is stored in a local SQLite database.
 
----
+No data leaves your computer, except the calls you explicitly allow through the tools (web search, Gmail, weather). The models run on your own graphics card.
 
-## Personas
+## Features
 
-Une persona, c'est un modèle Ollama, un prompt système, une température, un nom et une couleur.
-Chaque conversation en désigne une. Changer de persona ne change pas que le ton : ça change le
-modèle qui répond et ce qu'il se souvient de toi.
+- A persona is an Ollama model with a system prompt, a temperature, a name and a color. Each conversation belongs to one persona, so switching persona changes the model that answers and what it remembers about you.
+- The council and salon modes put several personas in the same conversation. Each speaker receives a memory context of its own.
+- The memory is extracted after each exchange by the model. A second call decides whether a fact is global or tied to a persona. The memory block injected in the prompt has a different shape in a one to one chat, in a council and in a salon.
+- Long conversations are compacted by steps. Once more than ten messages are not covered, the six oldest are merged into a running summary stored per conversation, and the chat never blocks if the summary fails.
+- Five agent types can be launched on demand: email digest, morning briefing, topic watch, meeting summary and weekly review. Their prompts force the model to use only the provided sources and to cite them.
+- Gmail is connected through read only OAuth2. The client credentials are entered in the settings screen and stored in the database, not in code or in the environment file.
+- The chat can call tools for web search, page fetching, Wikipedia, YouTube transcripts, date and time, and saving a memory.
+- You can attach images and files. Text PDFs are extracted, and scanned PDFs can be sent to vision models once poppler is installed.
+- A statistics screen shows the tokens read and generated per persona, taken from the counts Ollama returns.
+- Several visual themes are available.
 
-Le **salon** met plusieurs personas dans la même conversation. La table `conversations` porte le
-mode et la liste des participants, et chaque intervenant reçoit un contexte mémoire qui lui est
-propre (voir plus bas).
+## Demo
 
----
+![Legion4me demo](docs/media/demo.gif)
 
-## La mémoire
+The [MP4 version](docs/media/demo.mp4) of the demo is also available. It uses fictional data only. The personas, conversations and memories were invented for the recording, and the replies come from a stand-in for Ollama that returns a fixed text, so no real account, no real conversation and no real model appear in it.
 
-C'est la partie la plus travaillée du projet, et celle qui change vraiment l'usage au fil des
-semaines.
+## Architecture
 
-**Extraction.** À la fin d'un échange, un premier appel au modèle lit la conversation et en
-extrait des faits sous forme de tableau JSON. Le prompt reçoit **les mémoires déjà stockées**,
-avec pour consigne de ne rien retenir qu'elles couvrent déjà : sans ça, la base se remplit de
-dix reformulations du même fait. La consigne cadre aussi ce qui mérite d'être retenu, à savoir
-préférences techniques, projets en cours, décisions et leur raison, contraintes, et ce qui ne
-le mérite pas, à savoir les généralités, l'éphémère, et le contenu des réponses de l'assistant
-lui-même.
+The repository is an npm workspace with two packages.
 
-**Classification.** Chaque fait extrait repart dans un second appel qui tranche une seule
-question : ce fait vaut-il dans tous les contextes, ou seulement dans celui-ci ? La réponse
-décide s'il est stocké en `global` ou rattaché à la persona. Deux appels au lieu d'un, parce
-qu'un modèle local qui doit à la fois extraire et classer fait mal les deux.
+- The backend is an Express server in TypeScript. It stores data in SQLite through Drizzle ORM and better-sqlite3, talks to Ollama over HTTP, and streams chat answers to the browser as server sent events. In production it also serves the built frontend.
+- The frontend is a Vue 3 single page application built with Vite, with Pinia stores and Vue Router. In development, Vite proxies the `/api` routes to the backend.
+- Ollama runs outside the project and serves the models. On WSL2 the backend detects the Windows gateway address on its own.
+- Tavily, Open-Meteo and the Gmail API are only called when you use the matching tool or agent.
 
-**Trois portées de lecture.** Le bloc mémoire injecté dans le prompt n'a pas la même forme
-selon le contexte. En tête-à-tête, la persona voit le global plus ses propres souvenirs. En
-conseil, tous les participants partagent le même bloc. En salon, chaque intervenant voit le
-global, ses souvenirs à lui, et séparément ce que chacun des autres participants sait — ce qui
-lui permet de s'adresser aux autres en connaissance de cause sans confondre leurs souvenirs
-avec les siens.
+## Requirements
 
----
+- Node.js 20.3 or later, because the backend relies on `AbortSignal.any`.
+- Build tools for the native `better-sqlite3` module. On Linux or WSL2 install them with `sudo apt-get install build-essential python3`, and on macOS with `xcode-select --install`.
+- [Ollama](https://ollama.com) running and reachable. On WSL2, install it on Windows rather than inside WSL.
+- At least one pulled model. The default model for agents without a persona is `qwen3.5:9b`, and `llava:7b` is useful for images.
+- Optional. `poppler-utils` for scanned PDFs, and a Tavily API key for web search.
 
-## Compaction du contexte
-
-Une conversation longue finit par dépasser la fenêtre du modèle. Plutôt que de tronquer,
-Asmodeus résume par paliers.
-
-Un checkpoint est stocké par conversation : le résumé, et l'identifiant du dernier message
-qu'il couvre. Au-delà de dix messages non couverts, les six plus anciens sont absorbés dans le
-résumé, qui est réécrit en fusionnant l'ancien et les nouveaux échanges en un seul bloc. Le
-checkpoint avance d'autant.
-
-Deux détails qui comptent : les messages porteurs d'appels d'outils sont exclus du calcul,
-parce qu'ils gonflent le compte sans porter de conversation. Et si la génération du résumé
-échoue, l'ancien est renvoyé tel quel plutôt que de bloquer le chat.
-
----
-
-## Agents
-
-Cinq types, chacun avec sa config typée, déclenchables à la demande. Chaque agent peut porter
-une persona, qui détermine le modèle utilisé.
-
-| Agent | Ce qu'il fait |
-|---|---|
-| **Digest email** | Récupère les emails de un ou plusieurs comptes Gmail sur une période, filtre promotions et réseaux sociaux, et en produit une synthèse courte ou détaillée avec les actions à traiter |
-| **Briefing matinal** | Météo réelle de ta ville plus une recherche web par sujet suivi, synthétisés en un briefing |
-| **Veille** | Recherche par sujet, avec restriction possible à des sites précis, et sortie sourcée |
-| **Résumé de réunion** | Transcription en entrée, sections configurables (décisions, actions, participants, points ouverts) ou template libre |
-| **Revue hebdo** | Relit tes propres messages sur 7 ou 30 jours et en dégage thèmes, patterns et points récurrents |
-
-**Les prompts sont écrits contre l'hallucination.** Ceux du briefing et de la veille imposent
-de ne se servir que des sources fournies, de citer chaque fait avec son URL, et de dire
-explicitement quand les sources ne contiennent rien de récent sur un sujet. La température
-descend à 0.2 sur la veille. Un modèle local à qui on demande « les actualités du jour » sans
-ces garde-fous invente des articles plausibles avec des dates crédibles.
-
-Les runs partent en tâche de fond et écrivent leur statut en base (`running`, `done`, `error`),
-donc l'interface n'attend jamais. Seuls les six derniers runs par agent sont conservés.
-
----
-
-## Intégration Gmail
-
-OAuth2 en lecture seule. Les identifiants client ne vivent ni dans le code ni dans le `.env`
-mais en base, saisis depuis l'écran Paramètres. Le refresh de token est branché sur l'événement
-`tokens` du client Google et réécrit l'access token en base à chaque renouvellement, donc
-l'autorisation ne se redemande pas.
-
-L'extraction du corps parcourt récursivement l'arbre MIME en cherchant d'abord une partie
-`text/plain`, avec repli sur n'importe quelle partie décodable. Les URLs sont retirées et les
-espaces normalisés avant d'envoyer au modèle : un email HTML brut, c'est des milliers de tokens
-de balises pour trois phrases utiles.
-
----
-
-## Stack
-
-| | |
-|---|---|
-| Backend | Node · TypeScript · Express |
-| Base | SQLite (better-sqlite3) via Drizzle ORM |
-| Frontend | Vue 3 · Vite · Pinia |
-| Modèles | Ollama en local — n'importe quel modèle installé |
-| Outils | Tavily (recherche web) · Open-Meteo (météo) · Gmail API |
-| Runtime | PM2 |
-
-Le comptage de tokens de chaque message est stocké depuis les `prompt_eval_count` et
-`eval_count` renvoyés par Ollama, ce qui permet de voir ce que coûte réellement une
-conversation en contexte.
-
----
-
-## Installation
-
-Voir **[SETUP.md](SETUP.md)** : prérequis, Ollama, variables d'environnement, et les cas WSL2.
+## Installation and launch
 
 ```bash
+git clone https://github.com/MehdiZen/legion4me.git
+cd legion4me
 cp backend/.env.example backend/.env
 npm install
+ollama pull qwen3.5:9b
 npm run dev
 ```
 
----
+The interface opens on http://localhost:5173 and the API listens on http://localhost:3001. The SQLite database is created at the first start.
 
-## État
+For a production style run, build the project and start the backend, which then serves the interface on port 3001.
 
-Projet personnel. Fonctionnel de bout en bout : chat, salon, personas, mémoire, compaction,
-les cinq agents, Gmail.
+```bash
+npm run build
+npm start
+```
 
-Pas de tests automatisés à ce jour. Pas d'ordonnanceur non plus : les agents se déclenchent à
-la main, il n'y a pas encore de cron qui pose le briefing du matin dans ta boîte à 7h.
+The repository also ships an `ecosystem.config.js` file for PM2, which starts `backend/dist/index.js` and reads `backend/.env`. Run `pm2 start ecosystem.config.js` after a build. The detailed setup guide, written in French, is in [SETUP.md](SETUP.md).
+
+## Configuration
+
+The backend reads its settings from `backend/.env`. Copy `backend/.env.example` and adjust the values. The values below are placeholders.
+
+| Variable | Default | Role |
+|---|---|---|
+| `PORT` | `3001` | Port of the backend |
+| `FRONTEND_URL` | `http://localhost:5173` | Origin allowed by CORS |
+| `OLLAMA_URL` | detected | Base URL of Ollama, for example `http://localhost:11434` |
+| `OLLAMA_HOST` | unset | Host and port of Ollama, used when `OLLAMA_URL` is not set |
+| `DB_PATH` | `./legion4me.db` | Path of the SQLite file, relative to the working directory of the process |
+| `TAVILY_API_KEY` | unset | Enables web search, for example `tvly-xxxxxxxx` |
+| `GMAIL_REDIRECT_URI` | `http://localhost:3001/api/gmail/callback` | OAuth callback used by the Gmail integration |
+
+The Google OAuth client id and secret are not environment variables. They are entered in the settings screen of the application.
+
+## Development
+
+- `npm run dev` starts the backend with `tsx watch` and the frontend with Vite, side by side.
+- `npm run build` compiles the backend with `tsc` and builds the frontend after a `vue-tsc` type check.
+- `npm start` runs the compiled backend.
+- The project has no automated tests and no linter configured yet. A quick type check of the backend is `npx tsc --noEmit -p backend`, and `npx vue-tsc --noEmit` does the same for the frontend from the `frontend` folder.
+
+## Repository structure
+
+```text
+backend/
+  src/
+    index.ts          Express app and route mounting
+    db/               SQLite client and Drizzle schema
+    routes/           REST and streaming routes
+    services/         Ollama client, agents, memory, summaries, tools, files
+      orchestrator/   Chat, council and salon logic, prompts and context
+frontend/
+  src/
+    views/            Chat, agents, personas, statistics, settings
+    components/       Interface components
+    stores/           Pinia stores
+    themes/           Visual themes
+docs/media/           Demo video and GIF
+ecosystem.config.js   PM2 configuration
+SETUP.md              Detailed setup guide (French)
+```
+
+## License
+
+Copyright (c) 2026 Mehdi Zenati. Legion4me is **source-available** under a dual license. It is free for personal non-commercial use, and a paid license is required for commercial and professional use. See [LICENSE](LICENSE) for the exact terms. Third-party libraries keep their own licenses.
