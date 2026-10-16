@@ -14,3 +14,9 @@ backend/dist/
 # Environment
 .env
 
+# Logs et fichiers locaux
+*.log
+.DS_Store
+.env.local
+.env.*.local
+frontend/dev-dist/
